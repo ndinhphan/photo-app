@@ -1,0 +1,76 @@
+scalar GraphQLDate
+
+enum VisibilityType {
+  Public
+  Private
+  Friend
+}
+type User{
+  _id: ID!
+  id: Int!
+  firstname: String!
+  lastname: String!
+  email: String
+  description: String
+}
+
+input UserInputs{
+  firstname: String!
+  lastname: String!
+  email: String
+  description: String
+}
+
+input UserUpdateInputs{
+  firstname: String
+  lastname: String
+  email: String
+  description: String
+}
+
+type Post{
+  _id: ID!
+  userid: Int!
+  source: String!
+  visibility: VisibilityType!
+  date: GraphQLDate!
+  description: String
+}
+
+input PostInputs {
+  source: String!
+  visibility: VisibilityType!
+  date: GraphQLDate!
+  description: String
+}
+
+input PostUpdateInputs {
+  source: String
+  visibility: VisibilityType
+  date: GraphQLDate
+  description: String
+}
+
+
+
+
+
+
+##### Top level declarations
+
+type Query{
+  about: String!
+  user(id: Int!): User!
+  userList: [User]!
+}
+
+type Mutation{
+  setAboutMessage(message: String!): String
+  userCreate(user: UserInputs): User!
+  userUpdate(id: Int!, changes: UserUpdateInputs!): User!
+  userDelete(id: Int!): Boolean!
+  
+  postCreate(post: PostInputs): Post!
+  postUpdate(id: Int!, changes: PostUpdateInputs!): Post!
+  postDelete(id: Int!): Boolean!
+}
