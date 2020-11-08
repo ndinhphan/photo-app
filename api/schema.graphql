@@ -30,6 +30,7 @@ input UserUpdateInputs{
 
 type Post{
   _id: ID!
+  id: Int!
   userid: Int!
   source: String!
   visibility: VisibilityType!
@@ -40,14 +41,12 @@ type Post{
 input PostInputs {
   source: String!
   visibility: VisibilityType!
-  date: GraphQLDate!
   description: String
 }
 
 input PostUpdateInputs {
   source: String
   visibility: VisibilityType
-  date: GraphQLDate
   description: String
 }
 
@@ -62,6 +61,8 @@ type Query{
   about: String!
   user(id: Int!): User!
   userList: [User]!
+  post(id: Int!): Post!
+  postList(userid: Int): [Post]!
 }
 
 type Mutation{
