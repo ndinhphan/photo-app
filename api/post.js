@@ -22,7 +22,8 @@ async function list(_, { userid }) {
   const db = getDb();
   const filter = {};
   if (userid) filter.userid = userid;
-  const posts = db.collection('posts').find(filter).toArray();
+  const posts = await db.collection('posts').find(filter).toArray();
+  // console.log(posts);
   return posts;
 }
 async function create(_, { post }) {

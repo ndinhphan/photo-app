@@ -39,6 +39,7 @@ type Post{
 }
 
 input PostInputs {
+  userid: Int!
   source: String!
   visibility: VisibilityType!
   description: String
