@@ -2,7 +2,11 @@
 
 
 ## Available Scripts
-
+###  Start ui server:
+```
+cd ui
+npm start
+```
 ###  Start api server:
 ``` 
 cd api

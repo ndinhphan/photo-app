@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Photo App</title>
-  </head>
-  <body>
-    <div id="contents">
-        <!-- env.js has to be imported before app.js since app.js uses window.ENV. env.js is created in runtime? as a response to a function.-->
-        <script src="/env.js"></script>
-        <script src="./app.bundle.js"></script>
-        <script src="./vendor.bundle.js"></script>
-    </div>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Photo App</title>
+  <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+  <style>
+    
+  </style>
+</head>
+
+<body>
+  <div id="contents">
+    <!-- env.js has to be imported before app.js since app.js uses window.ENV. env.js is created in runtime? as a response to a function.-->
+    <script src="/env.js"></script>
+    <script src="./app.bundle.js"></script>
+    <script src="./vendor.bundle.js"></script>
+  </div>
 </body>
+
 </html>

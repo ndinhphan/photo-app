@@ -6,31 +6,34 @@
 // API_PROXY_TARGET = http://localhost:3000
 // ENABLE_HMR = true
 
-require('dotenv').config();
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+
 const express = require('express');
 const proxy = require('http-proxy-middleware');
 const path = require('path');
 
 const app = express();
 
-app.use(express.static('public'));
 
-const port = process.env.UI_SERVER_URL || 8000;
+const port = process.env.UI_SERVER_PORT || 8000;
 
-const ENABLE_HMR = (process.env.ENABLE_HMR || 'true') === true;
+const enableHMR = (process.env.ENABLE_HMR || true);
 
-if (ENABLE_HMR && (process.env.NODE_ENV !== 'production')) {
+if (enableHMR && (process.env.NODE_ENV !== 'production')) {
   // eslint-disable-next-line no-console
   console.log('Adding dev middleware, enabling HMR');
   const webpack = require('webpack');
   const devMiddleware = require('webpack-dev-middleware');
   const hotMiddleware = require('webpack-hot-middleware'); // hot module replacement
   const config = require('./webpack.config.js');
-
   // include hmr config in webpack config
   config.entry.app.push('webpack-hot-middleware/client');
-  config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
+  config.plugins = config.plugins || []; // enable plugins for HMR
+  config.plugins.push(new webpack.HotModuleReplacementPlugin());
   const compiler = webpack(config); // compiler from settings
   app.use(devMiddleware(compiler)); // mount
   app.use(hotMiddleware(compiler));
@@ -43,6 +46,9 @@ if (apiProxyTarget) {
 }
 const { UI_API_ENDPOINT } = process.env;
 const env = { UI_API_ENDPOINT };
+
+app.use(express.static('public'));
+
 app.get('/env.js', (req, res) => {
   res.send(`window.ENV = ${JSON.stringify(env)}`); // trick to set window env to match process env
 });
