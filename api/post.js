@@ -18,10 +18,11 @@ async function get(_, { id }) {
   const post = await db.collection('posts').findOne({ id });
   return post;
 }
-async function list(_, { userid }) {
+async function list(_, { userid, visibility }) {
   const db = getDb();
   const filter = {};
   if (userid) filter.userid = userid;
+  if (visibility) filter.visibility = visibility;
   const posts = await db.collection('posts').find(filter).toArray();
   // console.log(posts);
   return posts;
