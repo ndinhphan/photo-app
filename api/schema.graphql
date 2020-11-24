@@ -55,6 +55,24 @@ input PostUpdateInputs {
 
 
 
+type Comment{
+  _id: ID!
+  id: Int!
+  userid: Int!
+  postid: Int!
+  date: GraphQLDate!
+  description: String!
+}
+
+input CommentInputs {
+  userid: Int!
+  postid: Int!
+  description: String!
+}
+
+input CommentUpdateInputs {
+  description: String
+}
 
 
 
@@ -64,8 +82,13 @@ type Query{
   about: String!
   user(id: Int!): User!
   userList: [User]!
+
   post(id: Int!): Post!
   postList(userid: Int, visibility: VisibilityType): [Post]!
+
+  comment(id: Int!): Comment!
+  commentList(userid: Int, postid:Int): [Comment]!
+
 }
 
 type Mutation{
@@ -77,4 +100,8 @@ type Mutation{
   postCreate(post: PostInputs): Post!
   postUpdate(id: Int!, changes: PostUpdateInputs!): Post!
   postDelete(id: Int!): Boolean!
+
+  commentCreate(comment: CommentInputs): Comment!
+  commentUpdate(id: Int!, changes: CommentUpdateInputs!): Comment!
+  commentDelete(id: Int!): Boolean!  
 }
