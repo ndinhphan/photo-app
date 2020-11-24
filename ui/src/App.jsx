@@ -13,7 +13,6 @@ const element = (
   </Router>
 );
 
-
 ReactDOM.render(element, document.getElementById('contents'));
 
 if (module.hot) { // accept changes made by HMR

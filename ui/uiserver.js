@@ -44,7 +44,8 @@ const apiProxyTarget = process.env.API_PROXY_TARGET || 'http://localhost:3000';
 if (apiProxyTarget) {
   app.use('/graphql', proxy({ target: apiProxyTarget })); // direct /graphql to proxy
 }
-const { UI_API_ENDPOINT } = process.env;
+let { UI_API_ENDPOINT } = process.env;
+if (!UI_API_ENDPOINT) UI_API_ENDPOINT = '/graphql';
 const env = { UI_API_ENDPOINT };
 
 app.use(express.static('public'));

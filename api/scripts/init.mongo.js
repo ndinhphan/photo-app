@@ -11,12 +11,16 @@ const usersDB = [
     id: 1,
     firstname: 'John',
     lastname: 'Doe',
+    email: 'email1@address.com',
+    password: '123456',
     description: 'first user',
   },
   {
     id: 2,
     firstname: 'Jane',
     lastname: 'Doe',
+    email: 'email2@address.com',
+    password: '123456',
     description: 'second user',
   },
 ];

@@ -28,7 +28,7 @@ async function list() {
 }
 async function create(_, { user }) {
   const db = getDb();
-  validate(user);
+  // validate(user);
   const newUser = Object.assign({}, user);
   newUser.id = await getNextSequence('users');
   const result = await db.collection('users').insertOne(newUser);
