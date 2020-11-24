@@ -15,12 +15,13 @@ import graphQLFetch from './graphQLFetch.js';
   description: String
 }
  */
-export default class Page extends React.Component {
+export default class Post extends React.Component {
   constructor() {
     super();
     this.state = {
       post: {},
       user: {},
+      comments: [],
       showDescription: true,
     };
   }
@@ -42,24 +43,35 @@ export default class Page extends React.Component {
 
     const vars = {};
     if (currentPost.userid) vars.id = currentPost.userid;
+    if (currentPost.id) vars.postid = currentPost.id;
     const query = `
-    query user($id: Int!){
+    query post($id: Int!, $postid: Int!){
       user(id: $id){
-        firstname lastname description source
+        firstname lastname username description source
+      }
+      commentList(postid: $postid){
+        id userid username postid description date 
       }
     }`;
     const data = await graphQLFetch(query, vars);
-    if (data) {
-      this.setState({ user: data.user });
-    }
 
+    if (data) {
+      this.setState({ user: data.user, comments: data.commentList });
+    }
     if (currentPost) this.setState({ post: currentPost });
     if (showDescription === false) this.setState({ showDescription });
   }
 
   render() {
-    const { post, showDescription, user } = this.state;
+    const {
+      post, showDescription, user, comments,
+    } = this.state;
     // console.log(`${post.description} ${showDescription}`);
+    const commentsList = comments.map(comment => (
+      <span className="commentCard">
+        <h6>{`${comment.username}: ${comment.description}`}</h6>
+      </span>
+    ));
     let description = '';
     if (showDescription) {
       description = (
@@ -69,6 +81,7 @@ export default class Page extends React.Component {
         </Card.Body>
       );
     }
+
     // console.log(description);
 
     return (
@@ -77,12 +90,18 @@ export default class Page extends React.Component {
           <Card.Header>
             <Row>
               <Col xs={-1}><Image fluid responsive src={user.source} roundedCircle /></Col>
-              <Col xs={0}>{`${user.firstname} ${user.lastname}`}</Col>
+              <Col xs={0}>
+                <h6>{`${user.username}`}</h6>
+                <h6>{`${(new Date())} `}</h6>
+              </Col>
               <Col xs={6} />
             </Row>
           </Card.Header>
           <Card.Img responsive variant="top" fluid src={post.source} />
           <div>{description}</div>
+          <Card.Footer>
+            {commentsList}
+          </Card.Footer>
         </Card>
         <br />
       </>

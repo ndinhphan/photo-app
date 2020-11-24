@@ -5,10 +5,12 @@
 
 db.users.remove({});
 db.posts.remove({});
+db.comments.remove({});
 
 const usersDB = [
   {
     id: 1,
+    username: 'johndoe',
     firstname: 'John',
     lastname: 'Doe',
     source: 'https://via.placeholder.com/50',
@@ -16,6 +18,7 @@ const usersDB = [
   },
   {
     id: 2,
+    username: 'janedoe',
     firstname: 'Jane',
     lastname: 'Doe',
     source: 'https://via.placeholder.com/50',
@@ -27,6 +30,7 @@ const postsDB = [
   {
     id: 1,
     userid: 1,
+    username: 'johndoe',
     source: 'https://via.placeholder.com/650',
     visibility: 'Public',
     date: new Date('2019-05-15'),
@@ -35,6 +39,7 @@ const postsDB = [
   {
     id: 2,
     userid: 2,
+    username: 'janedoe',
     source: 'https://via.placeholder.com/650',
     visibility: 'Public',
     date: new Date('2020-01-20'),
@@ -43,6 +48,7 @@ const postsDB = [
   {
     id: 3,
     userid: 2,
+    username: 'janedoe',
     source: 'https://via.placeholder.com/650',
     visibility: 'Public',
     date: new Date('2020-01-22'),
@@ -51,6 +57,7 @@ const postsDB = [
   {
     id: 4,
     userid: 2,
+    username: 'janedoe',
     source: 'https://via.placeholder.com/650',
     visibility: 'Public',
     date: new Date('2020-01-21'),
@@ -62,6 +69,7 @@ const commentsDB = [
   {
     id: 1,
     userid: 1,
+    username: 'johndoe',
     postid: 1,
     date: new Date('2020-01-21'),
     description: 'Wow nice post!!! haha!!',
@@ -69,6 +77,7 @@ const commentsDB = [
   {
     id: 2,
     userid: 2,
+    username: 'janedoe',
     postid: 1,
     date: new Date('2020-01-21'),
     description: 'Same',
@@ -76,6 +85,7 @@ const commentsDB = [
   {
     id: 3,
     userid: 2,
+    username: 'janedoe',
     postid: 1,
     date: new Date('2020-01-21'),
     description: 'No',
@@ -83,6 +93,7 @@ const commentsDB = [
   {
     id: 4,
     userid: 1,
+    username: 'johndoe',
     postid: 2,
     date: new Date('2020-01-11'),
     description: 'Nope',
@@ -90,6 +101,7 @@ const commentsDB = [
   {
     id: 5,
     userid: 2,
+    username: 'janedoe',
     postid: 2,
     date: new Date('2020-01-11'),
     description: 'Yes',
@@ -97,6 +109,7 @@ const commentsDB = [
   {
     id: 6,
     userid: 1,
+    username: 'johndoe',
     postid: 3,
     date: new Date('2020-01-11'),
     description: 'Yes',
@@ -104,6 +117,7 @@ const commentsDB = [
   {
     id: 7,
     userid: 2,
+    username: 'janedoe',
     postid: 4,
     date: new Date('2020-01-11'),
     description: 'Yes',

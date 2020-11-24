@@ -29,7 +29,7 @@ mongo photoapp scripts/init.mongo.js
 ```
 query{
   userList{
-    id firstname lastname description
+    id username firstname lastname description
   }
 }
 ```
@@ -44,6 +44,7 @@ query{
 mutation{
   userCreate(user:{
     firstname:"Janet",
+    usernme: "janetdoe",
     lastname:"Doe",
     description:"whatever the fuck this is",
   })

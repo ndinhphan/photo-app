@@ -24,7 +24,7 @@ async function list(_, { userid, postid }) {
   if (userid) filter.userid = userid;
   if (postid) filter.postid = postid;
   const comments = await db.collection('comments').find(filter).toArray();
-  // console.log(comments);
+  console.log(comments);
   return comments;
 }
 async function create(_, { comment }) {
