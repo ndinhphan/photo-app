@@ -1,6 +1,6 @@
 const { UserInputError } = require('apollo-server-express');
 const { getDb, getNextSequence } = require('./db.js');
-const post = require('./post.js');
+// const post = require('./post.js');
 
 // validate user input error
 function validate(user) {
@@ -54,11 +54,13 @@ async function remove(_, { id }) {
   if (!user) return false;
 
   // removing  an user removes all their posts
-  const userposts = await post.list(_, { userid: id });
-  userposts.forEach(userpost => console.log(userpost));
-  userposts.forEach((userpost) => {
-    post.delete(_, { id: userpost.id });
-  });
+  // const userposts = await post.list(_, { userid: id });
+  // userposts.forEach(userpost => console.log(userpost));
+  // userposts.forEach((userpost) => {
+  //   post.delete(_, { id: userpost.id });
+  // });
+  await db.collection('posts').remove({ userid: id });
+  await db.collection('comments').remove({ userid: id });
   const result = await db.collection('users').removeOne({ id });
   return result.deletedCount === 1;
 }

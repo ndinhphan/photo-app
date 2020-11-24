@@ -76,7 +76,7 @@ export default class Page extends React.Component {
         <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
           <Card.Header>
             <Row>
-              <Col xs={-1}><Image fluid responsive src={user.source} exact to="/profile" roundedCircle /></Col>
+              <Col xs={-1}><Image fluid responsive src={user.source} roundedCircle /></Col>
               <Col xs={0}>{`${user.firstname} ${user.lastname}`}</Col>
               <Col xs={6} />
             </Row>

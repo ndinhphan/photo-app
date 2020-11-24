@@ -1,6 +1,6 @@
 const { UserInputError } = require('apollo-server-express');
 const { getDb, getNextSequence } = require('./db.js');
-
+// const comment = require('./comment.js');
 // validate post input error
 function validate(post) {
   const errors = [];
@@ -55,6 +55,7 @@ async function remove(_, { id }) {
   const post = await db.collection('posts').findOne({ id });
   if (!post) return false;
   const result = await db.collection('posts').removeOne({ id });
+  await db.collection('comments').remove({ postid: id });
   // ???
   return result.deletedCount === 1;
 }
