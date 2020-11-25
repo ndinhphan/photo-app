@@ -20,6 +20,9 @@ function handleDateDifference(date) {
     const currentDate = new Date();
     const differenceInSeconds = (currentDate.getTime() - date.getTime()) / 1000;
     const differenceInDays = Math.floor(differenceInSeconds / (60 * 60 * 24));
+    const differenceInYears = Math.floor(differenceInDays / 365);
+    if (differenceInYears > 1) return `${differenceInYears} years ago`;
+    if (differenceInYears === 1) return 'a year ago';
     if (differenceInDays === 1) return 'a day ago';
     if (differenceInDays < 1) {
       const differenceInHours = Math.floor(differenceInSeconds / (60 * 60));
