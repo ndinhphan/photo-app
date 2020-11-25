@@ -4,6 +4,7 @@ import {
   NavItem, ButtonToolbar, OverlayTrigger, Tooltip,
 } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
+import { AiOutlinePlusCircle } from 'react-icons/ai';
 import Toast from './Toast.jsx';
 import graphQLFetch from './graphQLFetch.js';
 
@@ -42,6 +43,7 @@ class CreatePostNavItem extends React.Component {
   async handleSubmit(e) { /* e is the submit event */
     e.preventDefault();
     this.hideModal();
+    const { reloadPostList } = this.props;
     // the form name is createPost
     const form = document.forms.createPost;
     // post userid and username is static
@@ -65,7 +67,7 @@ class CreatePostNavItem extends React.Component {
     if (data) {
       // const { history } = this.props;
       // history.push(`/edit/${data.postCreate.id}`);
-      // this.props.reloadPostList();
+      reloadPostList();
     }
   }
 
@@ -78,11 +80,11 @@ class CreatePostNavItem extends React.Component {
       <>
         <NavItem onClick={this.showModal}>
           <OverlayTrigger delay={1000} placement="left" overlay={<Tooltip id="create-post">Create Post</Tooltip>}>
-            <Button>Create</Button>
+            <h1><AiOutlinePlusCircle /></h1>
           </OverlayTrigger>
         </NavItem>
         <Modal keyboard show={showing} onHide={this.hideModel}>
-          <Modal.Header closeButton>
+          <Modal.Header closeButton onHide={this.hideModel}>
             <Modal.Title>Create Post</Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -111,6 +113,7 @@ class CreatePostNavItem extends React.Component {
             </ButtonToolbar>
           </Modal.Footer>
         </Modal>
+
         <Toast
           showing={toastVisible}
           onDismiss={this.dismissToast}

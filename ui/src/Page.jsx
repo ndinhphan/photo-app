@@ -69,6 +69,10 @@ export default class Page extends React.Component {
     this.reloadPostList = this.reloadPostList.bind(this);
     this.resetReloadPostList = this.resetReloadPostList.bind(this);
   }
+  /**
+   * reloadPostList and resetReloadPostList is used to signal Homepage
+   * to reload post list when CreatePostNavItem's handleSubmit is called
+   */
 
   reloadPostList() {
     this.setState({ reloadPostList: true });

@@ -10,7 +10,6 @@ export default class Contents extends React.Component {
   }
 
   render() {
-    // console.log('contents reloadpostlist:', this.props.reloadPostList);
     const { reloadPostList, resetReloadPostList } = this.props;
     return (
       <Switch>
