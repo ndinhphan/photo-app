@@ -23,9 +23,10 @@ async function list(_, { userid, visibility }) {
   const filter = {};
   if (userid) filter.userid = userid;
   if (visibility) filter.visibility = visibility;
+  // reverse to show new first
   const posts = await db.collection('posts').find(filter).toArray();
   // console.log(posts);
-  return posts;
+  return posts.reverse();
 }
 async function create(_, { post }) {
   const db = getDb();
@@ -33,6 +34,7 @@ async function create(_, { post }) {
   const newpost = Object.assign({}, post);
   newpost.id = await getNextSequence('posts');
   newpost.date = new Date();
+  if (!newpost.visibility) newpost.visibility = 'Public';
   const result = await db.collection('posts').insertOne(newpost);
   const savedpost = await db.collection('posts').findOne({ _id: result.insertedId });
   return savedpost;

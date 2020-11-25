@@ -22,6 +22,12 @@ export default class Profile extends React.Component {
     this.loadData();
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.reloadPostList !== this.props.reloadPostList) {
+      this.loadData();
+      this.props.resetReloadPostList();
+    }
+  }
 
   async loadData() {
     const query = `query  {
@@ -54,12 +60,12 @@ export default class Profile extends React.Component {
             <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
               <Card.Header>
                 <Row>
-                  <Col xs={-1}><Image fluid responsive="true" src="https://via.placeholder.com/50" exact="true" to="/profile" roundedCircle /></Col>
+                  <Col xs={-1}><Image responsive="true" src="https://via.placeholder.com/50" exact="true" to="/profile" roundedCircle /></Col>
                   <Col xs={0}><h6>user</h6></Col>
                   <Col xs={6} />
                 </Row>
               </Card.Header>
-              <Card.Img responsive="true" variant="top" fluid src="https://via.placeholder.com/650" />
+              <Card.Img responsive="true" variant="top" src="https://via.placeholder.com/650" />
               <Card.Body>
                 <Card.Title>Card Title</Card.Title>
                 <Card.Text>

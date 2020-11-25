@@ -68,7 +68,7 @@ export default class Post extends React.Component {
     } = this.state;
     // console.log(`${post.description} ${showDescription}`);
     const commentsList = comments.map(comment => (
-      <span className="commentCard">
+      <span className="commentCard" key={comment.id}>
         <h6>{`${comment.username}: ${comment.description}`}</h6>
       </span>
     ));
@@ -89,7 +89,7 @@ export default class Post extends React.Component {
         <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
           <Card.Header>
             <Row>
-              <Col xs={-1}><Image fluid responsive src={user.source} roundedCircle /></Col>
+              <Col xs={-1}><Image fluid="true" responsive="true" src={user.source} roundedCircle /></Col>
               <Col xs={0}>
                 <h6>{`${user.username}`}</h6>
                 <h6>{`${(new Date())} `}</h6>
@@ -97,7 +97,7 @@ export default class Post extends React.Component {
               <Col xs={6} />
             </Row>
           </Card.Header>
-          <Card.Img responsive variant="top" fluid src={post.source} />
+          <Card.Img responsive="true" variant="top" fluid="true" src={post.source} />
           <div>{description}</div>
           <Card.Footer>
             {commentsList}

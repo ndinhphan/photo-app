@@ -24,8 +24,8 @@ async function list(_, { userid, postid }) {
   if (userid) filter.userid = userid;
   if (postid) filter.postid = postid;
   const comments = await db.collection('comments').find(filter).toArray();
-  console.log(comments);
-  return comments;
+  // reverse to show newer first
+  return comments.reverse();
 }
 async function create(_, { comment }) {
   const db = getDb();
@@ -42,7 +42,7 @@ async function update(_, { id, changes }) {
   const db = getDb();
   if (changes.description) {
     const comment = await db.collection('comments').findOne({ id });
-    console.log(comment);
+    // console.log(comment);
     Object.assign(comment, changes);
     validate(comment);
   }

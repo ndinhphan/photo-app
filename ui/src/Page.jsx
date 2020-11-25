@@ -8,6 +8,7 @@ import { AiOutlineHome, AiOutlineUser } from 'react-icons/ai';
 import { BsHeart } from 'react-icons/bs';
 import { ImBubble2 } from 'react-icons/im';
 import Contents from './Contents.jsx';
+import CreatePostNavItem from './CreatePostNavItem.jsx';
 
 function Footer() {
   return (
@@ -19,10 +20,11 @@ function Footer() {
     </small>
   );
 }
-function NavBar() {
+function NavBar(props) {
   const profileDropdown = (
     <h4><AiOutlineUser /></h4>
   );
+  const { reloadPostList } = props;
   return (
     <Navbar className="justify-content-center navBar" bg="light" expand="lg">
       <Navbar.Brand href="/">Photo App</Navbar.Brand>
@@ -36,11 +38,13 @@ function NavBar() {
 
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
+          <NavItem>
+            <CreatePostNavItem reloadPostList={reloadPostList} />
+          </NavItem>
           <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHome /></h3></Nav.Link></LinkContainer>
           <LinkContainer exact to="/"><Nav.Link><h3><BsHeart /></h3></Nav.Link></LinkContainer>
           <LinkContainer exact to="/"><Nav.Link><h3><ImBubble2 /></h3></Nav.Link></LinkContainer>
           <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHome /></h3></Nav.Link></LinkContainer>
-
           <NavDropdown title={profileDropdown}>
             <LinkContainer exact to="/profile"><NavDropdown.Item href="#action/3.1">UserProfile</NavDropdown.Item></LinkContainer>
 
@@ -56,24 +60,46 @@ function NavBar() {
   );
 }
 
-export default function Page() {
-  return (
-    <Container>
-      <Row>
-        <Col xs={1} md={0.5} />
-        <Col xs={10} md={11}>
-          <div>
-            <NavBar />
-            <hr />
-            <Container>
-              <Contents />
-            </Container>
-            <Footer />
-          </div>
-        </Col>
-        <Col xs={1} md={0.5} />
-      </Row>
-    </Container>
+export default class Page extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      reloadPostList: false,
+    };
+    this.reloadPostList = this.reloadPostList.bind(this);
+    this.resetReloadPostList = this.resetReloadPostList.bind(this);
+  }
 
-  );
+  reloadPostList() {
+    this.setState({ reloadPostList: true });
+  }
+
+  resetReloadPostList() {
+    this.setState({ reloadPostList: false });
+  }
+
+  render() {
+    const { reloadPostList } = this.state;
+    return (
+      <Container>
+        <Row>
+          <Col xs={1} md={0.5} />
+          <Col xs={10} md={11}>
+            <div>
+              <NavBar reloadPostList={this.reloadPostList} />
+              <hr />
+              <Container>
+                <Contents
+                  reloadPostList={reloadPostList}
+                  resetReloadPostList={this.resetReloadPostList}
+                />
+              </Container>
+              <Footer />
+            </div>
+          </Col>
+          <Col xs={1} md={0.5} />
+        </Row>
+      </Container>
+    );
+  }
 }
