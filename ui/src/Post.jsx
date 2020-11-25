@@ -15,6 +15,25 @@ import graphQLFetch from './graphQLFetch.js';
   description: String
 }
  */
+function handleDateDifference(date) {
+  if (date) {
+    const currentDate = new Date();
+    const differenceInSeconds = (currentDate.getTime() - date.getTime()) / 1000;
+    const differenceInDays = Math.floor(differenceInSeconds / (60 * 60 * 24));
+    if (differenceInDays === 1) return 'a day ago';
+    if (differenceInDays < 1) {
+      const differenceInHours = Math.floor(differenceInSeconds / (60 * 60));
+      if (differenceInHours > 1) return `${differenceInHours} hours ago`;
+      if (differenceInHours === 1) return 'an hour ago';
+      const differenceInMinutes = Math.floor(differenceInSeconds / (60));
+      if (differenceInMinutes > 1) return `${differenceInMinutes} minutes ago`;
+      return 'less than a minute ago';
+    }
+    return `${differenceInDays} days ago`;
+  }
+  return undefined;
+}
+
 export default class Post extends React.Component {
   constructor() {
     super();
@@ -92,7 +111,7 @@ export default class Post extends React.Component {
               <Col xs={-1}><Image fluid="true" responsive="true" src={user.source} roundedCircle /></Col>
               <Col xs={0}>
                 <h6>{`${user.username}`}</h6>
-                <h6>{`${(new Date())} `}</h6>
+                <h6>{`${handleDateDifference(post.date)}`}</h6>
               </Col>
               <Col xs={6} />
             </Row>
