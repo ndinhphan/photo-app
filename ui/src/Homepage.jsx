@@ -23,9 +23,10 @@ export default class Profile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.reloadPostList !== this.props.reloadPostList) {
+    const { reloadPostList, resetReloadPostList } = this.props;
+    if (prevProps.reloadPostList !== reloadPostList) {
       this.loadData();
-      this.props.resetReloadPostList();
+      resetReloadPostList();
     }
   }
 
@@ -81,7 +82,7 @@ export default class Profile extends React.Component {
               <Card border="secondary" style={{ width: 'auto', height: 'auto', border: 0 }}>
                 <Card.Body>
                   <Row>
-                    <Col xs={-1}><Image fluid responsive="true" src="https://via.placeholder.com/50" exact="true" to="/profile" roundedCircle /></Col>
+                    <Col xs={-1}><Image responsive="true" src="https://via.placeholder.com/50" exact="true" to="/profile" roundedCircle /></Col>
                     <Col xs={0}><h6>user</h6></Col>
                   </Row>
                 </Card.Body>

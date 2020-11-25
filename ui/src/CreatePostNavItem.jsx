@@ -65,7 +65,6 @@ class CreatePostNavItem extends React.Component {
     if (data) {
       // const { history } = this.props;
       // history.push(`/edit/${data.postCreate.id}`);
-      console.log('reloadpostlist is ', this.props.reloadPostList());
       // this.props.reloadPostList();
     }
   }
