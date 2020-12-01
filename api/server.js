@@ -1,5 +1,5 @@
 const express = require('express');
-const { connectToDb } = require('./db.js');
+const { connectToDb } = require('./db_mysql.js');
 const { installHandler } = require('./api_handler.js');
 require('dotenv').config();
 

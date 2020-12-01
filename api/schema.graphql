@@ -5,15 +5,17 @@ enum VisibilityType {
   Private
   Friend
 }
+
 type User{
-  _id: ID!
   id: Int!
   username: String!
   firstname: String!
   lastname: String!
-  email: String
-  source: String
-  favorites: [String]
+  email: String!
+  password: String!
+  source: String!
+  favorites: [Post!]
+  posts:[Post!]
   description: String
 }
 
@@ -21,7 +23,7 @@ input UserInputs{
   username: String!
   firstname: String!
   lastname: String!
-  email: String
+  email: String!
   description: String
 }
 
@@ -34,7 +36,6 @@ input UserUpdateInputs{
 }
 
 type Post{
-  _id: ID!
   id: Int!
   userid: Int!
   username: String!
@@ -62,13 +63,11 @@ input PostUpdateInputs {
 
 
 type Comment{
-  _id: ID!
   id: Int!
-  userid: Int!
-  username: String!
-  postid: Int!
-  date: GraphQLDate!
-  description: String!
+  content: String!
+  author: User!
+  post: Post!
+  createdAt: String!
 }
 
 input CommentInputs {

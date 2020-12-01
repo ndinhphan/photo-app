@@ -1,5 +1,5 @@
 const { UserInputError } = require('apollo-server-express');
-const { getDb, getNextSequence } = require('./db.js');
+const { getDb, getNextSequence } = require('./db_mysql.js');
 // const post = require('./post.js');
 
 // validate user input error
@@ -17,9 +17,11 @@ function validate(user) {
   }
 }
 async function get(_, { id }) {
-  const db = getDb();
-  const user = await db.collection('users').findOne({ id });
-  return user;
+  const db = await getDb();
+  const User = await db.User.findByPk(id)
+  console.log(User);
+  // const user = await db.collection('users').findOne({ id });
+  return User;
 }
 async function list() {
   const db = getDb();
