@@ -17,7 +17,8 @@ npm start
 
 ```
 cd api
-mongo photoapp scripts/init.mongo.js
+node scripts/init.mysql.js
+(Run Mysql script in mysql workbench for now)
 ```
 
 ## GraphQL playground:
