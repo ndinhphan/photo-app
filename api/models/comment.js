@@ -6,7 +6,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    content: DataTypes.STRING,
+    content: {
+      type: DataTypes.STRING,
+      notEmpty: true,
+    },
   });
   Comment.associate = (models) => {
     Comment.belongsTo(models.User, { foreignKey: { name: 'userId', allowNull: false }, as: 'author', onDelete: 'CASCADE' });

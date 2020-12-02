@@ -6,9 +6,15 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    source: DataTypes.STRING,
+    source: {
+      type: DataTypes.STRING,
+      notEmpty: true,
+    },
     description: DataTypes.STRING,
-    visibility: DataTypes.STRING,
+    visibility: {
+      type: DataTypes.STRING,
+      notEmpty: true,
+    },
   });
   Post.associate = (models) => {
     Post.belongsTo(models.User, { foreignKey: { name: 'userId', allowNull: false }, as: 'author', onDelete: 'CASCADE' });

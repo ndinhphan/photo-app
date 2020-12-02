@@ -25,7 +25,7 @@ class CreatePostNavItem extends React.Component {
   }
 
   showError(message) {
-    this.setState({ toastVisible: true, toastMessage: message, toastType: 'error' });
+    this.setState({ toastVisible: true, toastMessage: message, toastType: 'warning' });
   }
 
   dismissToast() {

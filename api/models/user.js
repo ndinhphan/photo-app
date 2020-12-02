@@ -6,12 +6,31 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    username: DataTypes.STRING,
-    firstname: DataTypes.STRING,
-    lastname: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    source: DataTypes.STRING,
+    username: {
+      type: DataTypes.STRING,
+      notEmpty: true,
+    },
+    firstname: {
+      type: DataTypes.STRING,
+      notEmpty: true,
+    },
+    lastname: {
+      type: DataTypes.STRING,
+      notEmpty: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      is: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+      notEmpty: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      notEmpty: true,
+    },
+    source: {
+      type: DataTypes.STRING,
+      notEmpty: true,
+    },
     description: DataTypes.STRING,
   });
   User.associate = (models) => {

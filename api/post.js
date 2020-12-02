@@ -4,11 +4,11 @@ const { getDb } = require('./db_mysql.js');
 function validate(post) {
   const errors = [];
   // change later
-  if (post.source.length < 0) {
+  if (post.source.length <= 0) {
     errors.push('Source is required');
   }
   if (errors.length > 0) {
-    throw new UserInputError('Invalid input(s): ', { errors });
+    throw new UserInputError('Invalid input(s)', { errors });
   }
 }
 
@@ -30,7 +30,7 @@ async function list(_, { userId, visibility }) {
   else if (visibility) posts = await db.Post.findAll({ where: { visibility } });
   else posts = await db.Post.findAll();
   // console.log(posts);
-  return posts;
+  return posts.reverse();
 }
 async function create(_, { post }) {
   const db = getDb();
