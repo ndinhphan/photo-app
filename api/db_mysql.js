@@ -8,7 +8,7 @@ const db = {};
 const userModel = require('./models/user');
 const postModel = require('./models/post');
 const commentModel = require('./models/comment');
-
+const postLikeModel = require('./models/postLike');
 
 async function connectToDb() {
   const sequelize = new Sequelize(
@@ -26,6 +26,7 @@ async function connectToDb() {
   db.User = await userModel(sequelize, Sequelize);
   db.Post = await postModel(sequelize, Sequelize);
   db.Comment = await commentModel(sequelize, Sequelize);
+  db.PostLike = await postLikeModel(sequelize, Sequelize);
 
   if (db.User.associate) {
     db.User.associate(db);
@@ -36,6 +37,9 @@ async function connectToDb() {
   }
   if (db.Comment.associate) {
     db.Comment.associate(db);
+  }
+  if (db.PostLike.associate) {
+    db.PostLike.associate(db);
   }
   await sequelize.sync();
 

@@ -21,6 +21,7 @@ node scripts/init.mysql.js
 (Run Mysql script in mysql workbench for now)
 Check .env file to config mysql server
 ```
+![](api/scripts/mysql_schema_diagram.png)
 
 ## GraphQL playground:
 ### Open [http://localhost:3000/graphql](http://localhost:3000/graphql) 
