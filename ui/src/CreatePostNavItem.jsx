@@ -48,8 +48,7 @@ class CreatePostNavItem extends React.Component {
     const form = document.forms.createPost;
     // post userid and username is static
     const post = {
-      userid: 2,
-      username: 'janedoe',
+      userId: 2,
       source: form.source.value,
       description: form.description.value,
       visibility: 'Public',
@@ -60,7 +59,17 @@ class CreatePostNavItem extends React.Component {
       postCreate(
         post: $post
       ){
-        id userid username source description
+        id
+        source
+        description
+        visibility
+        createdAt
+        userId
+        author{
+          username
+          firstname
+          lastname
+        }
       }
     }`;
     const data = await graphQLFetch(query, { post }, this.showError);
