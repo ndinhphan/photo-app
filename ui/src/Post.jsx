@@ -1,8 +1,10 @@
 import React from 'react';
 import {
   Card, Row, Col, Image,
+  Button,
 } from 'react-bootstrap';
 
+import { AiFillDelete } from 'react-icons/ai';
 import graphQLFetch from './graphQLFetch.js';
 
 function handleDateDifference(date) {
@@ -31,28 +33,41 @@ export default class Post extends React.Component {
   constructor() {
     super();
     this.state = {
-      // post: {},
-      // showDescription: true,
+      post: {},
+      showDescription: true,
     };
+    this.handleClickDelete = this.handleClickDelete.bind(this);
   }
 
-  // componentDidMount() {
-  //   this.loadData();
-  // }
+  componentDidMount() {
+    console.log('component did mount called');
+    this.loadData();
+  }
 
-  // componentDidUpdate(prevProps) {
-  //   const { post: prevPost } = prevProps;
-  //   const { post } = this.props;
-  //   if (prevPost.source !== post.source) {
-  //     this.loadData();
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    const { post: prevPost } = prevProps;
+    const { post } = this.props;
+    if (prevPost.source !== post.source) {
+      this.loadData();
+    }
+  }
 
-  // async loadData() {
-  //   const { post: currentPost, showDescription } = this.props;
-  //   if (currentPost) this.setState({ post: currentPost });
-  //   if (showDescription === false) this.setState({ showDescription });
-  // }
+  async loadData() {
+    const { post: currentPost, showDescription } = this.props;
+    if (currentPost) this.setState({ post: currentPost });
+    if (showDescription === false) this.setState({ showDescription });
+  }
+
+  async handleClickDelete() {
+    const { post } = this.props;
+    const vars = { id: post.id };
+    const { HomepageloadData } = this.props;
+    const query = `mutation postDelete($id:Int!){
+      postDelete(id: $id)
+    }`;
+    await graphQLFetch(query, vars);
+    HomepageloadData();
+  }
 
   render() {
     // const {
@@ -84,8 +99,16 @@ export default class Post extends React.Component {
             <Row>
               <Col xs={-1}><Image fluid="true" responsive="true" src={post.author.source} roundedCircle /></Col>
               <Col xs={0}>
-                <h6>{`${post.author.username}`}</h6>
-                <h6>{`${handleDateDifference(post.createdAt)}`}</h6>
+                <Row>
+                  <Col>
+                    <h6>{`${post.author.username}`}</h6>
+                    <h6>{`${handleDateDifference(post.createdAt)}`}</h6>
+                  </Col>
+                  <Col>
+                    <Button><AiFillDelete onClick={this.handleClickDelete} /></Button>
+                  </Col>
+                </Row>
+
               </Col>
               <Col xs={6} />
             </Row>
