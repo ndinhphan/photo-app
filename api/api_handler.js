@@ -35,6 +35,28 @@ const resolvers = {
     commentUpdate: comment.update,
     commentDelete: comment.delete,
   },
+  User: {
+    posts(queryUser) {
+      // Sequelize mixins based on association
+      return queryUser.getPosts();
+    },
+  },
+  Post: {
+    author(queryPost) {
+      return queryPost.getAuthor();
+    },
+    comments(queryPost) {
+      return queryPost.getComments();
+    },
+  },
+  Comment: {
+    author(queryComment) {
+      return queryComment.getAuthor();
+    },
+    post(queryComment) {
+      return queryComment.getPost();
+    },
+  },
   GraphQLDate,
 };
 

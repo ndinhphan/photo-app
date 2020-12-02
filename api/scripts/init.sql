@@ -2,12 +2,13 @@ DROP TABLE IF EXISTS `Comments`;
 DROP TABLE IF EXISTS `Posts`;
 DROP TABLE IF EXISTS `Users`;
 CREATE TABLE IF NOT EXISTS `Users` (`id` INTEGER NOT NULL auto_increment , `username` VARCHAR(255), `firstname` VARCHAR(255), `lastname` VARCHAR(255), `email` VARCHAR(255), `password` VARCHAR(255), `source` VARCHAR(255), `description` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;
-CREATE TABLE IF NOT EXISTS `Posts` (`id` INTEGER NOT NULL auto_increment , `source` VARCHAR(255), `description` VARCHAR(255), `visibility` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, `userId` INTEGER, PRIMARY KEY (`id`), FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB;
-CREATE TABLE IF NOT EXISTS `Comments` (`id` INTEGER NOT NULL auto_increment , `content` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, `postId` INTEGER, `userId` INTEGER, PRIMARY KEY (`id`), FOREIGN KEY (`postId`) REFERENCES `Posts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE, FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS `Posts` (`id` INTEGER NOT NULL auto_increment , `source` VARCHAR(255), `description` VARCHAR(255), `visibility` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, `userId` INTEGER NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS `Comments` (`id` INTEGER NOT NULL auto_increment , `content` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, `postId` INTEGER NOT NULL, `userId` INTEGER NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`postId`) REFERENCES `Posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`userId`) REFERENCES `Users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;
+
 insert into users(id, username, firstname, lastname, email, password, source, description, createdAt, updatedAt) values
-(1,'johndoe','John','Doe','https://via.placeholder.com/50','johndoe@gmail.com','abcdef','first user','2019-12-31','2019-12-31'),
-(2,'janedoe','Jane','Doe','https://via.placeholder.com/50','janedoe@gmail.com','abcdefgh','second user','2010-12-10','2013-12-31'),
-(3,'janetdoe','Janet','Doe','https://via.placeholder.com/50','janetdoe@gmail.com','abcdefghjsakdlm','third user','2012-6-2','2012-12-31')
+(1,'johndoe','John','Doe','johndoe@gmail.com','password12345','https://via.placeholder.com/50','first user','2019-12-31','2019-12-31'),
+(2,'janedoe','Jane','Doe','janedoe@gmail.com','password12345','https://via.placeholder.com/50','second user','2010-12-10','2013-12-31'),
+(3,'janetdoe','Janet','Doe','janetdoe@gmail.com','password12345','https://via.placeholder.com/50','third user','2012-6-2','2012-12-31')
 ;
 
 insert into posts(id, source, description, visibility, createdAt, updatedAt, userId) values

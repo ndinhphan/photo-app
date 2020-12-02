@@ -17,6 +17,7 @@ type User{
   favorites: [Post!]
   posts:[Post!]
   description: String
+  createdAt: GraphQLDate!
 }
 
 input UserInputs{
@@ -37,18 +38,18 @@ input UserUpdateInputs{
 
 type Post{
   id: Int!
-  userid: Int!
-  username: String!
+  userId: Int!
   source: String!
   favorite: [String]
+  author: User!
+  comments: [Comment!]
   visibility: VisibilityType!
-  date: GraphQLDate!
   description: String
+  createdAt: GraphQLDate!
 }
 
 input PostInputs {
-  userid: Int!
-  username: String!
+  userId: Int!
   source: String!
   visibility: VisibilityType!
   description: String
@@ -67,18 +68,17 @@ type Comment{
   content: String!
   author: User!
   post: Post!
-  createdAt: String!
+  createdAt: GraphQLDate!
 }
 
 input CommentInputs {
-  userid: Int!
-  username: String!
-  postid: Int!
-  description: String!
+  userId: Int!
+  postId: Int!
+  content: String!
 }
 
 input CommentUpdateInputs {
-  description: String
+  content: String
 }
 
 

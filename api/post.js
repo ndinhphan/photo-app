@@ -1,6 +1,5 @@
 const { UserInputError } = require('apollo-server-express');
-const { getDb, getNextSequence } = require('./db.js');
-// const comment = require('./comment.js');
+const { getDb } = require('./db_mysql.js');
 // validate post input error
 function validate(post) {
   const errors = [];
@@ -15,51 +14,54 @@ function validate(post) {
 
 async function get(_, { id }) {
   const db = getDb();
-  const post = await db.collection('posts').findOne({ id });
-  return post;
+  const Post = await db.Post.findByPk(id);
+  return Post;
 }
-async function list(_, { userid, visibility }) {
+async function list(_, { userId, visibility }) {
   const db = getDb();
-  const filter = {};
-  if (userid) filter.userid = userid;
-  if (visibility) filter.visibility = visibility;
+  // const filter = {};
+  // if (userId) filter.userid = userId;
+  // if (visibility) filter.visibility = visibility;
   // reverse to show new first
-  const posts = await db.collection('posts').find(filter).toArray();
+  let posts;
+  // fix this
+  if (userId && visibility) posts = await db.Post.findAll({ where: { userId, visibility } });
+  else if (userId) posts = await db.Post.findAll({ where: { userId } });
+  else if (visibility) posts = await db.Post.findAll({ where: { visibility } });
+  else posts = await db.Post.findAll();
   // console.log(posts);
-  return posts.reverse();
+  return posts;
 }
 async function create(_, { post }) {
   const db = getDb();
   validate(post);
   const newpost = Object.assign({}, post);
-  newpost.id = await getNextSequence('posts');
-  newpost.date = new Date();
   if (!newpost.visibility) newpost.visibility = 'Public';
-  const result = await db.collection('posts').insertOne(newpost);
-  const savedpost = await db.collection('posts').findOne({ _id: result.insertedId });
+  const result = await db.Post.create(newpost);
+  const savedpost = await db.Post.findByPk(result.id);
   return savedpost;
 }
 
 async function update(_, { id, changes }) {
   const db = getDb();
   if (changes.source || changes.visibility || changes.description) {
-    const post = await db.collection('posts').findOne({ id });
+    const post = await db.Post.findByPk(id);
     Object.assign(post, changes);
     validate(post);
   }
-  await db.collection('posts').updateOne({ id }, { $set: changes });
-  return db.collection('posts').findOne({ id });
+  await db.Post.update(changes, { where: { id } });
+  return db.Post.findByPk(id);
 }
 
 // return boolean
 async function remove(_, { id }) {
   const db = getDb();
-  const post = await db.collection('posts').findOne({ id });
+  const post = await db.Post.findByPk(id);
   if (!post) return false;
-  const result = await db.collection('posts').removeOne({ id });
-  await db.collection('comments').remove({ postid: id });
-  // ???
-  return result.deletedCount === 1;
+
+  const result = await db.Post.destroy({ where: { id } });
+
+  return result === 1;
 }
 
 // delete: reverse keyword

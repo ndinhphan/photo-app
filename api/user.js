@@ -1,5 +1,5 @@
 const { UserInputError } = require('apollo-server-express');
-const { getDb, getNextSequence } = require('./db_mysql.js');
+const { getDb } = require('./db_mysql.js');
 // const post = require('./post.js');
 
 // validate user input error
@@ -18,53 +18,46 @@ function validate(user) {
 }
 async function get(_, { id }) {
   const db = await getDb();
-  const User = await db.User.findByPk(id)
-  console.log(User);
-  // const user = await db.collection('users').findOne({ id });
+  const User = await db.User.findByPk(id);
+  // console.log(User);
   return User;
 }
 async function list() {
   const db = getDb();
-  const users = db.collection('users').find({}).toArray();
+  const users = db.User.findAll();
   return users;
 }
 async function create(_, { user }) {
   const db = getDb();
   validate(user);
   const newUser = Object.assign({}, user);
-  newUser.id = await getNextSequence('users');
-  const result = await db.collection('users').insertOne(newUser);
-  const savedUser = await db.collection('users').findOne({ _id: result.insertedId });
-  return savedUser;
+  if (!user.source) newUser.source = 'https://via.placeholder.com/50';
+  // newUser.id = await getNextSequence('users');
+  const result = await db.User.create(newUser);
+  return result;
+  // const savedUser = await db.collection('users').findOne({ _id: result.insertedId });
+  // return savedUser;
 }
 
 async function update(_, { id, changes }) {
   const db = getDb();
   if (changes.firstname || changes.lastname || changes.description) {
-    const user = await db.collection('users').findOne({ id });
+    const user = await db.User.findByPk(id);
     Object.assign(user, changes);
     validate(user);
   }
-  await db.collection('users').updateOne({ id }, { $set: changes });
-  return db.collection('users').findOne({ id });
+  await db.User.update(changes, { where: { id } });
+  return db.User.findByPk(id);
 }
 
 // return boolean
 async function remove(_, { id }) {
   const db = getDb();
-  const user = await db.collection('users').findOne({ id });
+  const user = await db.User.findByPk(id);
   if (!user) return false;
 
-  // removing  an user removes all their posts
-  // const userposts = await post.list(_, { userid: id });
-  // userposts.forEach(userpost => console.log(userpost));
-  // userposts.forEach((userpost) => {
-  //   post.delete(_, { id: userpost.id });
-  // });
-  await db.collection('posts').remove({ userid: id });
-  await db.collection('comments').remove({ userid: id });
-  const result = await db.collection('users').removeOne({ id });
-  return result.deletedCount === 1;
+  const result = await db.User.destroy({ where: { id } });
+  return result === 1;
 }
 
 // delete: reverse keyword
