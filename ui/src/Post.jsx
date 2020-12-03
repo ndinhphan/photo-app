@@ -1,20 +1,12 @@
 import React from 'react';
 import {
   Card, Row, Col, Image,
+  Button,
 } from 'react-bootstrap';
 
+import { AiFillDelete } from 'react-icons/ai';
 import graphQLFetch from './graphQLFetch.js';
-/**
- * type Post{
-  _id: ID!
-  id: Int!
-  userid: Int!
-  source: String!
-  visibility: VisibilityType!
-  date: GraphQLDate!
-  description: String
-}
- */
+
 function handleDateDifference(date) {
   if (date) {
     const currentDate = new Date();
@@ -42,13 +34,13 @@ export default class Post extends React.Component {
     super();
     this.state = {
       post: {},
-      user: {},
-      comments: [],
       showDescription: true,
     };
+    this.handleClickDelete = this.handleClickDelete.bind(this);
   }
 
   componentDidMount() {
+    console.log('component did mount called');
     this.loadData();
   }
 
@@ -62,36 +54,29 @@ export default class Post extends React.Component {
 
   async loadData() {
     const { post: currentPost, showDescription } = this.props;
-
-    const vars = {};
-    if (currentPost.userid) vars.id = currentPost.userid;
-    if (currentPost.id) vars.postid = currentPost.id;
-    const query = `
-    query post($id: Int!, $postid: Int!){
-      user(id: $id){
-        firstname lastname username description source
-      }
-      commentList(postid: $postid){
-        id userid username postid description date 
-      }
-    }`;
-    const data = await graphQLFetch(query, vars);
-
-    if (data) {
-      this.setState({ user: data.user, comments: data.commentList });
-    }
     if (currentPost) this.setState({ post: currentPost });
     if (showDescription === false) this.setState({ showDescription });
   }
 
+  async handleClickDelete() {
+    const { post, HomepageloadData } = this.props;
+    const vars = { id: post.id };
+    const query = `mutation postDelete($id:Int!){
+      postDelete(id: $id)
+    }`;
+    await graphQLFetch(query, vars);
+    HomepageloadData();
+  }
+
   render() {
-    const {
-      post, showDescription, user, comments,
-    } = this.state;
-    // console.log(`${post.description} ${showDescription}`);
-    const commentsList = comments.map(comment => (
+    // const {
+    //   post, showDescription,
+    // } = this.state;
+    const { post } = this.props;
+    const showDescription = true;
+    const commentsList = post.comments.map(comment => (
       <span className="commentCard" key={comment.id}>
-        <h6>{`${comment.username}: ${comment.description}`}</h6>
+        <h6>{`${comment.author.username}: ${comment.content}`}</h6>
       </span>
     ));
     let description = '';
@@ -109,12 +94,20 @@ export default class Post extends React.Component {
     return (
       <>
         <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-          <Card.Header>
+          <Card.Header className="PostHeader">
             <Row>
-              <Col xs={-1}><Image fluid="true" responsive="true" src={user.source} roundedCircle /></Col>
+              <Col xs={-1}><Image fluid="true" responsive="true" src={post.author.source} roundedCircle /></Col>
               <Col xs={0}>
-                <h6>{`${user.username}`}</h6>
-                <h6>{`${handleDateDifference(post.date)}`}</h6>
+                <Row>
+                  <Col>
+                    <h6>{`${post.author.username}`}</h6>
+                    <h6>{`${handleDateDifference(post.createdAt)}`}</h6>
+                  </Col>
+                  <Col>
+                    <Button><AiFillDelete onClick={this.handleClickDelete} /></Button>
+                  </Col>
+                </Row>
+
               </Col>
               <Col xs={6} />
             </Row>

@@ -1,5 +1,5 @@
 const { UserInputError } = require('apollo-server-express');
-const { getDb, getNextSequence } = require('./db.js');
+const { getDb } = require('./db_mysql.js');
 
 // validate post input error
 function validate(comment) {
@@ -15,49 +15,48 @@ function validate(comment) {
 
 async function get(_, { id }) {
   const db = getDb();
-  const comment = await db.collection('comments').findOne({ id });
-  return comment;
+  const Comment = await db.Comment.findByPk(id);
+  return Comment;
 }
-async function list(_, { userid, postid }) {
+async function list(_, { userId, postId }) {
   const db = getDb();
-  const filter = {};
-  if (userid) filter.userid = userid;
-  if (postid) filter.postid = postid;
-  const comments = await db.collection('comments').find(filter).toArray();
+  let comments;
+  // fix this
+  if (userId && postId) comments = await db.Comment.findAll({ where: { userId, postId } });
+  else if (userId) comments = await db.Comment.findAll({ where: { userId } });
+  else if (postId) comments = await db.Comment.findAll({ where: { postId } });
+  else comments = await db.Comment.findAll();
   // reverse to show newer first
-  return comments.reverse();
+  return comments;
 }
 async function create(_, { comment }) {
   const db = getDb();
   validate(comment);
   const newComment = Object.assign({}, comment);
-  newComment.id = await getNextSequence('comments');
-  newComment.date = new Date();
-  const result = await db.collection('comments').insertOne(newComment);
-  const saved = await db.collection('comments').findOne({ _id: result.insertedId });
-  return saved;
+  const result = await db.Comment.create(newComment);
+  const savedComment = await db.Comment.findByPk(result.id);
+  return savedComment;
 }
 
 async function update(_, { id, changes }) {
   const db = getDb();
   if (changes.description) {
-    const comment = await db.collection('comments').findOne({ id });
-    // console.log(comment);
+    const comment = await db.Comment.findByPk(id);
     Object.assign(comment, changes);
     validate(comment);
   }
-  await db.collection('comments').updateOne({ id }, { $set: changes });
-  return db.collection('comments').findOne({ id });
+  await db.Comment.update(changes, { where: { id } });
+  return db.Comment.findByPk(id);
 }
 
 // return boolean
 async function remove(_, { id }) {
   const db = getDb();
-  const comment = await db.collection('comments').findOne({ id });
+  const comment = await db.Comment.findByPk(id);
   if (!comment) return false;
-  const result = await db.collection('comments').removeOne({ id });
+  const result = await db.Comment.destroy({ where: { id } });
   // ???
-  return result.deletedCount === 1;
+  return result === 1;
 }
 
 // delete: reverse keyword

@@ -25,7 +25,7 @@ class CreatePostNavItem extends React.Component {
   }
 
   showError(message) {
-    this.setState({ toastVisible: true, toastMessage: message, toastType: 'error' });
+    this.setState({ toastVisible: true, toastMessage: message, toastType: 'warning' });
   }
 
   dismissToast() {
@@ -48,8 +48,7 @@ class CreatePostNavItem extends React.Component {
     const form = document.forms.createPost;
     // post userid and username is static
     const post = {
-      userid: 2,
-      username: 'janedoe',
+      userId: 2,
       source: form.source.value,
       description: form.description.value,
       visibility: 'Public',
@@ -60,7 +59,17 @@ class CreatePostNavItem extends React.Component {
       postCreate(
         post: $post
       ){
-        id userid username source description
+        id
+        source
+        description
+        visibility
+        createdAt
+        userId
+        author{
+          username
+          firstname
+          lastname
+        }
       }
     }`;
     const data = await graphQLFetch(query, { post }, this.showError);
@@ -70,7 +79,6 @@ class CreatePostNavItem extends React.Component {
       reloadPostList();
     }
   }
-
 
   render() {
     const {
@@ -83,8 +91,8 @@ class CreatePostNavItem extends React.Component {
             <h1><AiOutlinePlusCircle /></h1>
           </OverlayTrigger>
         </NavItem>
-        <Modal keyboard show={showing} onHide={this.hideModel}>
-          <Modal.Header closeButton onHide={this.hideModel}>
+        <Modal keyboard show={showing} onHide={this.hideModal}>
+          <Modal.Header closeButton onHide={this.hideModal}>
             <Modal.Title>Create Post</Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -108,7 +116,7 @@ class CreatePostNavItem extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <ButtonToolbar>
-              <Button type="button" variant="primary" onClick={this.handleSubmit}>Submit</Button>
+              <Button type="submit" variant="primary" onClick={this.handleSubmit}>Submit</Button>
               <Button type="button" variant="link" onClick={this.hideModal}>Cancel</Button>
             </ButtonToolbar>
           </Modal.Footer>

@@ -16,6 +16,7 @@ export default class Profile extends React.Component {
     this.state = {
       posts: [],
     };
+    this.loadData = this.loadData.bind(this);
   }
 
   componentDidMount() {
@@ -31,15 +32,31 @@ export default class Profile extends React.Component {
   }
 
   async loadData() {
-    const query = `query  {
+    const query = `query {
       postList(visibility: Public) {
-        _id
         id
-        userid
         source
-        visibility
-        date
         description
+        visibility
+        createdAt
+        userId
+        author {
+          source
+          firstname
+          lastname
+          username
+        }
+        comments {
+          id
+          content
+          createdAt
+          author {
+            source
+            username
+            firstname
+            lastname
+          }
+        }
       }
     }
     `;
@@ -51,9 +68,12 @@ export default class Profile extends React.Component {
 
   render() {
     const { posts } = this.state;
-    const postCards = posts.map(post => (
-      <Post post={post} key={post.id} />
-    ));
+    let postCards;
+    if (posts.length > 0) {
+      postCards = posts.map(post => (
+        <Post post={post} key={post.id} HomepageloadData={this.loadData} />
+      ));
+    }
     return (
       <>
         <Row>
