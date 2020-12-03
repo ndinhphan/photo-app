@@ -80,7 +80,6 @@ class CreatePostNavItem extends React.Component {
     }
   }
 
-
   render() {
     const {
       showing, toastMessage, toastType, toastVisible,
@@ -117,7 +116,7 @@ class CreatePostNavItem extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <ButtonToolbar>
-              <Button type="button" variant="primary" onClick={this.handleSubmit}>Submit</Button>
+              <Button type="submit" variant="primary" onClick={this.handleSubmit}>Submit</Button>
               <Button type="button" variant="link" onClick={this.hideModal}>Cancel</Button>
             </ButtonToolbar>
           </Modal.Footer>

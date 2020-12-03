@@ -59,9 +59,8 @@ export default class Post extends React.Component {
   }
 
   async handleClickDelete() {
-    const { post } = this.props;
+    const { post, HomepageloadData } = this.props;
     const vars = { id: post.id };
-    const { HomepageloadData } = this.props;
     const query = `mutation postDelete($id:Int!){
       postDelete(id: $id)
     }`;
