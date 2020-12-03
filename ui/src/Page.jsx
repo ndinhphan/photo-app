@@ -4,8 +4,8 @@ import {
   Nav, NavDropdown, Navbar, NavItem, Container, Form, FormControl, Button, Row, Col,
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { AiOutlineHome, AiOutlineUser } from 'react-icons/ai';
-import { AiOutlineHeart } from 'react-icons/ai';
+import { AiOutlineHome, AiOutlineUser, AiOutlineHeart } from 'react-icons/ai';
+
 // import { ImBubble2 } from 'react-icons/im';
 import Contents from './Contents.jsx';
 import CreatePostNavItem from './CreatePostNavItem.jsx';
@@ -46,7 +46,7 @@ function NavBar(props) {
           <NavDropdown title={profileDropdown}>
             <LinkContainer exact to="/profile"><NavDropdown.Item href="#action/3.1">UserProfile</NavDropdown.Item></LinkContainer>
             <LinkContainer exact to="/login"><NavDropdown.Item href="#action/3.1">Login</NavDropdown.Item></LinkContainer>
-            
+
             <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
