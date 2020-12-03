@@ -20,6 +20,7 @@ route.post('/', (req, res) => {
                 //     id: response.User.dataValues.id,
                 // });
                 res.json({
+                    url: '/home',
                     success: true,
                     data: response,
                 });

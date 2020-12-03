@@ -3,6 +3,7 @@ const { connectToDb } = require('./db_mysql.js');
 const { installHandler } = require('./api_handler.js');
 require('dotenv').config();
 const login = require('./login');
+const register = require('./register');
 
 const bodyParser = require('body-parser');
 
@@ -12,6 +13,7 @@ const app = express();
 installHandler(app);
 
 app.use('/api/login', login.route);
+app.use('/api/register', register.route);
 
   (async function start() {
     try {
