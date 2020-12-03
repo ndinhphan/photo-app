@@ -17,7 +17,6 @@ const path = require('path');
 
 const app = express();
 
-
 const port = process.env.UI_SERVER_PORT || 8000;
 
 const enableHMR = (process.env.ENABLE_HMR || true);
@@ -43,6 +42,7 @@ if (enableHMR && (process.env.NODE_ENV !== 'production')) {
 const apiProxyTarget = process.env.API_PROXY_TARGET || 'http://localhost:3000';
 if (apiProxyTarget) {
   app.use('/graphql', proxy({ target: apiProxyTarget })); // direct /graphql to proxy
+  app.use('/api/login', proxy({ target: apiProxyTarget }));
 }
 const { UI_API_ENDPOINT } = process.env;
 const env = { UI_API_ENDPOINT };
