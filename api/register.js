@@ -8,21 +8,32 @@ route.use(bodyParser.json());
 let db = getDb();
 
 route.post('/', (req, res) => {
-    const { fisrtname, lastname, email, password } = req.body;
-    console.log(req.body);
-    const newUser = db.User.create({
-        username: null,
-        fisrtname: JSON.stringify(fisrtname),
-        lastname: JSON.stringify(lastname),
-        email: JSON.stringify(email),
-        password: JSON.stringify(password)
-    });
+    const { firstname, lastname, email, password } = req.body;
+    db.User.findOne({
+        attributes: ['id'],
+        where: { email }
+    }).then(result => {
+        if (result) {
+            return res.json({
+                success: false,
+                message: 'This email has already been used. Please try another email.'
+            });
+        }
+        else {
+            const newUser = db.User.create({ 
+                username: firstname + ' ' + lastname, 
+                firstname, 
+                lastname, 
+                email, 
+                password 
+            }).then(result => {
                 res.json({
                     success: true,
-                    data: newUser.id});
-        //         });
-        //     } else res.json({success: false})
-        // })
+                    data: 'Register success'
+                })
+            })
+        }
+    })
 });
 
 module.exports = { route };

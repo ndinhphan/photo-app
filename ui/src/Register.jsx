@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-// import graphQLFetch from './graphQLFetch';
+import Switch from "react-bootstrap/esm/Switch";
+import { Redirect } from "react-router-dom";
 import bcrypt from 'bcryptjs';
 
 export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            success: false,
+            message: '', //Email has already existed.
             firstname: '',
             lastname: '',
             email: '',
@@ -39,29 +42,36 @@ export default class Register extends Component {
         event.preventDefault();
         console.log('handlesubmit');
         
-        // const salt = await bcrypt.genSalt(10);
-        // const hashedPassword = await bcrypt.hash(this.state.password, salt);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(this.state.password, salt);
 
         const {firstname, lastname, password, email} = this.state;
         const vars = {
-            firstname, lastname, email, password
+            firstname, lastname, password: hashedPassword, email
         };
 
-        const response = await fetch('/api/register', {
+        fetch('/api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(vars)
         })
-        .then(result => {
-            console.log(result);
-        })
-        // localStorage.setItem(AUTH_TOKEN, authtoken);
-        // alert(AUTH_TOKEN);
-        // TODO: return user token and redirect to Home
+        .then(response => response.json())
+        .then(response => {
+            if (response.success) this.setState({success: true});
+            else {
+                this.setState({message: response.message})
+            }
+        });
     }
     render() {
+        let message;
+        if (this.state.message) {
+            message = <p style={{color: 'red'}}> {this.state.message} </p>
+        }
+        if (this.state.success) 
+            return (<Switch><Redirect from='/register' to='/login' /></Switch>)
         return (
             <form onSubmit={this.handleSubmit}>
                 <h3>Register</h3>
@@ -93,7 +103,7 @@ export default class Register extends Component {
                         value={this.state.password} onChange={this.handlePasswordChange}
                     />
                 </div>
-
+                {message}
                 <button type="submit" className="btn btn-dark btn-lg btn-block">Register</button>
                 <hr />
                 <p className="text-center">

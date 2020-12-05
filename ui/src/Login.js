@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-// import Switch from "react-bootstrap/esm/Switch";
-// import { Redirect } from "react-router-dom";
+import Switch from "react-bootstrap/esm/Switch";
+import { Redirect } from "react-router-dom";
+import bcrypt from 'bcryptjs';
 
 class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoggedIn: false,
             email: '',
             password: ''
         };
@@ -33,27 +35,19 @@ class Login extends Component {
             },
             body: JSON.stringify({ email, password })
         })
-        .then(result => {
+        .then(result => { // TODO 
             console.log(result);
+            // this.setState({isLoggedIn: true})
+            // localStorage.setItem('AUTH_TOKEN', 'authed');
+            // console.log(localStorage.getItem('AUTH_TOKEN'));
+            sessionStorage.setItem('AUTH_TOKEN', 'authed');
+            console.log(sessionStorage.getItem('AUTH_TOKEN'));
         })
-        // localStorage.setItem(AUTH_TOKEN, authtoken);
-        // alert(AUTH_TOKEN);
-        // TODO: auth user and redirect to Home
     }
-
-    // _confirm = async data => {
-    //     const { token } = this.state.login ? data.login : data.signup
-    //     this._saveUserData(token)
-    //     this.props.history.push(`/`)
-    //   }
-
-    // _saveUserData = token => {
-    //     localStorage.setItem(AUTH_TOKEN, token)
-    // }
 
 
     render() {
-        if (this.state.isLoggedIn) return (<Switch><Redirect from='/login' to='/home' /></Switch>)
+        if (localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/login' to='/home' /></Switch>)
         else return (
             <form onSubmit={this.handleSubmit}>
 
