@@ -9,17 +9,28 @@ let db = getDb();
 
 route.post('/', (req, res) => {
     const { username, firstname, lastname, email, password } = req.body;
+    //check username existed
     db.User.findOne({
         attributes: ['id'],
-        where: { email }
+        where: { username }
     }).then(result => {
         if (result) {
             return res.json({
                 success: false,
-                message: 'This email has already been used. Please try another email.'
+                message: 'This username has already been used.'
             });
         }
-        else {
+        //check email existed
+        db.User.findOne({
+            attributes: ['id'],
+            where: { email }
+        }).then(result => {
+            if (result) {
+                return res.json({
+                    success: false,
+                    message: 'This email has already been used.'
+                });
+            }
             const newUser = db.User.create({ 
                 username,
                 firstname, 
@@ -32,8 +43,10 @@ route.post('/', (req, res) => {
                     data: 'Register success'
                 })
             })
-        }
-    })
+        });
+    });
+
+    
 });
 
 module.exports = { route };
