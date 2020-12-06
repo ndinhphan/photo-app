@@ -8,7 +8,7 @@ route.use(bodyParser.json());
 let db = getDb();
 
 route.post('/', (req, res) => {
-    const { firstname, lastname, email, password } = req.body;
+    const { username, firstname, lastname, email, password } = req.body;
     db.User.findOne({
         attributes: ['id'],
         where: { email }
@@ -21,7 +21,7 @@ route.post('/', (req, res) => {
         }
         else {
             const newUser = db.User.create({ 
-                username: firstname + ' ' + lastname, 
+                username,
                 firstname, 
                 lastname, 
                 email, 

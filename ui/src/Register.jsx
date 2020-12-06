@@ -9,17 +9,23 @@ export default class Register extends Component {
         this.state = {
             success: false,
             message: '', //Email has already existed.
+            username: '',
             firstname: '',
             lastname: '',
             email: '',
             password: ''
         };
 
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handleFirstnameChange = this.handleFirstnameChange.bind(this);
         this.handleLastnameChange = this.handleLastnameChange.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleUsernameChange(event) {
+        this.setState({ username: event.target.value });
     }
 
     handleFirstnameChange(event) {
@@ -45,9 +51,9 @@ export default class Register extends Component {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(this.state.password, salt);
 
-        const {firstname, lastname, password, email} = this.state;
+        const {username, firstname, lastname, password, email} = this.state;
         const vars = {
-            firstname, lastname, password: hashedPassword, email
+            username, firstname, lastname, password: hashedPassword, email
         };
 
         fetch('/api/register', {
@@ -75,6 +81,13 @@ export default class Register extends Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <h3>Register</h3>
+
+                <div className="form-group">
+                    <label>Username</label>
+                    <input type="text" className="form-control" placeholder="Username" required 
+                        value={this.state.username} onChange={this.handleUsernameChange}
+                    />
+                </div>
 
                 <div className="form-group">
                     <label>First name</label>
