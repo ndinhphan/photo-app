@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import URLSearchParams from 'url-search-params';
-
+import Switch from "react-bootstrap/esm/Switch";
+import { Redirect } from "react-router-dom";
 import { Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
@@ -67,6 +68,8 @@ export default class Profile extends React.Component {
   }
 
   render() {
+    if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/home' to='/login' /></Switch>)
+
     const { posts } = this.state;
     let postCards;
     if (posts.length > 0) {

@@ -1,14 +1,18 @@
-const bodyParser = require('body-parser');
-const Router = require('express');
-const { getDb } = require('./db_mysql');
-const route = new Router();
+const { getDb } = require('../db_mysql');
 
-route.use(bodyParser.json());
 
 let db = getDb();
+var EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-route.post('/', (req, res) => {
+let register = (req, res) => {
     const { username, firstname, lastname, email, password } = req.body;
+
+    if (!EMAIL_REGEX.test(email)) 
+        return res.json({
+            success: false,
+            message: 'Invalid Email.'
+        });
+        
     //check username existed
     db.User.findOne({
         attributes: ['id'],
@@ -45,8 +49,6 @@ route.post('/', (req, res) => {
             })
         });
     });
+};
 
-    
-});
-
-module.exports = { route };
+module.exports = { register };

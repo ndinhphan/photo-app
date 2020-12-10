@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import Switch from "react-bootstrap/esm/Switch";
-import { Redirect } from "react-router-dom";
+import Button from 'react-bootstrap/Button';
 import bcrypt from 'bcryptjs';
 
 export default class Register extends Component {
@@ -8,7 +7,7 @@ export default class Register extends Component {
         super(props);
         this.state = {
             success: false,
-            message: '', //Email has already existed.
+            message: '',
             username: '',
             firstname: '',
             lastname: '',
@@ -65,19 +64,24 @@ export default class Register extends Component {
         })
         .then(response => response.json())
         .then(response => {
-            if (response.success) this.setState({success: true});
+            if (response.success) {
+                this.setState({success: true});
+                this.setState({message: ''})
+            }
             else {
                 this.setState({message: response.message})
             }
         });
     }
-    render() {
+    render() {        
+        if (this.state.success) {
+            return <Button size="lg" variant="success" href='/login' block> Register success! Click here to Log in.</Button>
+        }
+        
         let message;
         if (this.state.message) {
             message = <p style={{color: 'red'}}> {this.state.message} </p>
         }
-        if (this.state.success) 
-            return (<Switch><Redirect from='/register' to='/login' /></Switch>)
         return (
             <form onSubmit={this.handleSubmit}>
                 <h3>Register</h3>

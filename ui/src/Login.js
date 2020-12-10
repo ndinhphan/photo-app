@@ -28,18 +28,25 @@ class Login extends Component {
     async handleSubmit(event) {
         event.preventDefault();
         const { emailOrUsername, password } = this.state;
-        const response = await fetch('/api/login', {
+        await fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ emailOrUsername, password })
+            body: JSON.stringify({ 
+                emailOrUsername, 
+                password,
+                // token: localStorage.getItem('AUTH_TOKEN')
+            })
         })
         .then(response => response.json())
         .then(response => {
             if (!response.success) this.setState({message: response.message});
-            else this.setState({message: 'Login success!'})
-            console.log(response);
+            else {
+                this.setState({message: response.message})
+                localStorage.setItem('AUTH_TOKEN', response.token);
+                console.log(localStorage.getItem('AUTH_TOKEN'));
+            }
         })
     }
 
