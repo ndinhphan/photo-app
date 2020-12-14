@@ -43,6 +43,7 @@ const apiProxyTarget = process.env.API_PROXY_TARGET || 'http://localhost:3000';
 if (apiProxyTarget) {
   app.use('/graphql', proxy({ target: apiProxyTarget })); // direct /graphql to proxy
   app.use('/api/login', proxy({ target: apiProxyTarget }));
+  app.use('/api/register', proxy({ target: apiProxyTarget }));
 }
 const { UI_API_ENDPOINT } = process.env;
 const env = { UI_API_ENDPOINT };
