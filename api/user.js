@@ -9,9 +9,6 @@ function validate(user) {
   if (user.firstname.length < 2 || user.lastname.length < 2) {
     errors.push('First name or Last name is too short');
   }
-  // if (user.email.length < 1) {
-  //   errors.push('email is required');
-  // }
   if (errors.length > 0) {
     throw new UserInputError('Invalid input(s): ', { errors });
   }
