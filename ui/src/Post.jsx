@@ -1,11 +1,12 @@
 import React from 'react';
 import {
   Card, Row, Col, Image,
-  Button,
+  Button, Dropdown, Form, ButtonToolbar,
 } from 'react-bootstrap';
 
-import { AiFillDelete } from 'react-icons/ai';
+import { AiOutlineMore } from 'react-icons/ai';
 import graphQLFetch from './graphQLFetch.js';
+import Comment from './Comment.jsx';
 
 function handleDateDifference(date) {
   if (date) {
@@ -34,28 +35,124 @@ export default class Post extends React.Component {
     super();
     this.state = {
       post: {},
-      showDescription: true,
+      changed: false,
+      edit: false,
     };
     this.handleClickDelete = this.handleClickDelete.bind(this);
+    this.loadData = this.loadData.bind(this);
+    this.handleClickEdit = this.handleClickEdit.bind(this);
+    this.handleCancelEdit = this.handleCancelEdit.bind(this);
+    this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
   }
 
-  componentDidMount() {
-    console.log('component did mount called');
+  async componentDidMount() {
+    // console.log('component did mount called');
     this.loadData();
   }
 
   componentDidUpdate(prevProps) {
+    console.log("component post updated");
     const { post: prevPost } = prevProps;
     const { post } = this.props;
-    if (prevPost.source !== post.source) {
+    console.log(post.comments);
+    if (prevPost.source !== post.source || prevPost.description !== post.description || post.comments.length !== prevPost.comments.length) {
       this.loadData();
     }
   }
 
   async loadData() {
-    const { post: currentPost, showDescription } = this.props;
+    console.log('loadData called');
+    const { post: currentPost } = this.props;
+    const { changed } = this.state;
     if (currentPost) this.setState({ post: currentPost });
-    if (showDescription === false) this.setState({ showDescription });
+    console.log('changed in loadData is ', changed);
+    const query = `query post($id: Int!){
+      post(id: $id) {
+        id
+        source
+        description
+        visibility
+        createdAt
+        userId
+        author {
+          source
+          firstname
+          lastname
+          username
+        }
+        comments {
+          id
+          content
+          createdAt
+          author {
+            source
+            username
+            firstname
+            lastname
+          }
+        }
+      }
+    }
+    `;
+    const vars = { id: currentPost.id };
+    const data = await graphQLFetch(query, vars);
+    if (data) {
+      console.log('data fetched from loaddata');
+      this.setState({ post: data.post, changed: false });
+    }
+  }
+
+  async handleClickEdit() {
+    console.log('handleclickEdit called');
+    this.setState({ edit: true });
+    // this.loadData();
+  }
+
+  async handleCancelEdit() {
+    console.log('handleCancelEdit called');
+    this.setState({ edit: false });
+    // this.loadData();
+  }
+
+  async handleSubmitEdit(e) {
+    e.preventDefault();
+    console.log('handleSubmitEdit called');
+    const { post } = this.props;
+    const vars = { id: post.id, changes: { description: document.forms.postEdit.description.value } };
+    this.setState({ edit: false, changed: true });
+    console.log(document.forms.postEdit.description);
+    const query = `mutation postUpdate($id: Int!, $changes: PostUpdateInputs!){
+      postUpdate(id: $id, changes: $changes) {
+        id
+        source
+        description
+        visibility
+        createdAt
+        userId
+        author {
+          source
+          firstname
+          lastname
+          username
+        }
+        comments {
+          id
+          content
+          createdAt
+          author {
+            source
+            username
+            firstname
+            lastname
+          }
+        }
+      }
+    }
+    `;
+    const data = await graphQLFetch(query, vars);
+    if (data) {
+      this.setState({ post: data.postUpdate, changed: true });
+    }
   }
 
   async handleClickDelete() {
@@ -72,22 +169,59 @@ export default class Post extends React.Component {
     // const {
     //   post, showDescription,
     // } = this.state;
-    const { post } = this.props;
+    let post;
+    const { HomepageloadData } = this.props;
+    const { post: postState, edit } = this.state;
+    if (Object.keys(postState).length === 0 && postState.constructor === Object) {
+      post = this.props.post;
+    } else {
+      post = postState;
+    }
     const showDescription = true;
+    // const commentsList = post.comments.map(comment => (
+    //   <span className="commentCard" key={comment.id}>
+    //     <h6>{`${comment.author.username}: ${comment.content}`}</h6>
+    //   </span>
+    // ));
     const commentsList = post.comments.map(comment => (
-      <span className="commentCard" key={comment.id}>
-        <h6>{`${comment.author.username}: ${comment.content}`}</h6>
-      </span>
+      <Comment comment={comment} key={comment.id} PostloadData={this.loadData} />
     ));
     let description = '';
-    if (showDescription) {
+    if (showDescription && !edit && post.description) {
       description = (
         <Card.Body>
           <Card.Title />
           <Card.Text>{post.description}</Card.Text>
         </Card.Body>
       );
+    } else if (edit) {
+      description = (
+        <Card.Body>
+          <Card.Title />
+          <Form name="postEdit">
+            <Form.Group>
+              <Form.Control as="textarea" name="description" rows={3} defaultValue={post.description} />
+            </Form.Group>
+          </Form>
+
+          <ButtonToolbar>
+            <Button type="submit" variant="primary" onClick={this.handleSubmitEdit}>Submit</Button>
+            <Button type="button" variant="link" onClick={this.handleCancelEdit}>Cancel</Button>
+          </ButtonToolbar>
+        </Card.Body>
+      );
+    } else if (!post.description) {
+      description = '';
     }
+    let commentSection;
+    if (commentsList.length >= 1) {
+      commentSection = (
+        <Card.Footer>
+          {commentsList}
+        </Card.Footer>
+      );
+    }
+
 
     // console.log(description);
 
@@ -104,7 +238,17 @@ export default class Post extends React.Component {
                     <h6>{`${handleDateDifference(post.createdAt)}`}</h6>
                   </Col>
                   <Col>
-                    <Button><AiFillDelete onClick={this.handleClickDelete} /></Button>
+                    <Dropdown>
+                      <Dropdown.Toggle id="dropdown-basic">
+                        <AiOutlineMore />
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
+                        <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
+                        <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </Col>
                 </Row>
 
@@ -112,11 +256,9 @@ export default class Post extends React.Component {
               <Col xs={6} />
             </Row>
           </Card.Header>
-          <Card.Img responsive="true" variant="top" fluid="true" src={post.source} />
           <div>{description}</div>
-          <Card.Footer>
-            {commentsList}
-          </Card.Footer>
+          <Card.Img responsive="true" variant="top" fluid="true" src={post.source} />
+          <div>{commentSection}</div>
         </Card>
         <br />
       </>

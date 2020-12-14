@@ -24,8 +24,11 @@ export default class Profile extends React.Component {
     this.loadData();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { reloadPostList, resetReloadPostList } = this.props;
+    const { posts } = this.state;
+    const { posts: prevPosts } = prevState;
+    if (posts.length !== prevPosts.length) this.loadData();
     if (prevProps.reloadPostList !== reloadPostList) {
       this.loadData();
       resetReloadPostList();

@@ -21,43 +21,6 @@ function Footer() {
   );
 }
 
-function NavBar(props) {
-  const profileDropdown = (
-    <h4><AiOutlineUser /></h4>
-  );
-  const { reloadPostList } = props;
-  return (
-    <Navbar className="justify-content-center navBar" bg="light" expand="lg">
-      <Navbar.Brand href="/">Photo App</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Nav>
-        <Form inline>
-          <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-          <Button variant="outline-success">Search</Button>
-        </Form>
-      </Nav>
-
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
-          <NavItem>
-            <CreatePostNavItem reloadPostList={reloadPostList} />
-          </NavItem>
-          <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHome /></h3></Nav.Link></LinkContainer>
-          <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer>
-          <NavDropdown title={profileDropdown}>
-            <LinkContainer exact to="/profile"><NavDropdown.Item href="#action/3.1">UserProfile</NavDropdown.Item></LinkContainer>
-            <Button onClick={() => {localStorage.removeItem("AUTH_TOKEN")}} href="/login"><NavDropdown.Item href="#action/3.1">Log out</NavDropdown.Item></Button>
-            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-          </NavDropdown>
-        </Nav>
-
-      </Navbar.Collapse>
-    </Navbar>
-  );
-}
-
 export default class Page extends React.Component {
   constructor() {
     super();
@@ -104,4 +67,48 @@ export default class Page extends React.Component {
       </Container>
     );
   }
+}
+
+function NavBar(props) {
+  const profileDropdown = (
+    <h4><AiOutlineUser /></h4>
+  );
+  const { reloadPostList } = props;
+  let AdditionalNavBarItems;
+  if (localStorage.getItem('AUTH_TOKEN')) {
+    AdditionalNavBarItems = (
+      <>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Nav>
+          <Form inline>
+            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+            <Button variant="outline-success">Search</Button>
+          </Form>
+        </Nav>
+
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ml-auto">
+            <NavItem>
+              <CreatePostNavItem reloadPostList={reloadPostList} />
+            </NavItem>
+            <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHome /></h3></Nav.Link></LinkContainer>
+            <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer>
+            <NavDropdown title={profileDropdown}>
+              <LinkContainer exact to="/profile"><NavDropdown.Item href="#action/3.1">UserProfile</NavDropdown.Item></LinkContainer>
+              <NavDropdown.Item href="#action/3.3">Placeholder</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item onClick={() => { localStorage.removeItem('AUTH_TOKEN'); }} href="/login">Log out</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.4">Placeholder</NavDropdown.Item>
+            </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+      </>
+    );
+  }
+  return (
+    <Navbar className="justify-content-center navBar" bg="light" expand="lg">
+      <Navbar.Brand href="/">Photo App</Navbar.Brand>
+      {AdditionalNavBarItems}
+    </Navbar>
+  );
 }

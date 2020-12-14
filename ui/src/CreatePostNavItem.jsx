@@ -91,7 +91,7 @@ class CreatePostNavItem extends React.Component {
             <h1><AiOutlinePlusCircle /></h1>
           </OverlayTrigger>
         </NavItem>
-        <Modal keyboard show={showing} onHide={this.hideModal}>
+        <Modal keyboard show={showing} onHide={this.hideModal} >
           <Modal.Header closeButton onHide={this.hideModal}>
             <Modal.Title>Create Post</Modal.Title>
           </Modal.Header>
@@ -103,7 +103,7 @@ class CreatePostNavItem extends React.Component {
               </FormGroup>
               <FormGroup>
                 <FormLabel>Description</FormLabel>
-                <FormControl type="text" name="description" autoFocus />
+                <FormControl as="textarea" name="description" autoFocus />
               </FormGroup>
               <Form.Group>
                 <Form.Label>Visibility:</Form.Label>
