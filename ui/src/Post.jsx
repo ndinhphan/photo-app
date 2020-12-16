@@ -1,10 +1,19 @@
+/* eslint-disable no-console */
+/* eslint-disable max-len */
 import React from 'react';
 import {
   Card, Row, Col, Image,
   Button, Dropdown, Form, ButtonToolbar,
+  Nav,
 } from 'react-bootstrap';
 
-import { AiOutlineMore } from 'react-icons/ai';
+import { LinkContainer } from 'react-router-bootstrap';
+
+import {
+  AiOutlineGlobal, AiOutlineHeart, AiOutlineMore,
+} from 'react-icons/ai';
+
+
 import graphQLFetch from './graphQLFetch.js';
 import Comment from './Comment.jsx';
 
@@ -35,7 +44,6 @@ export default class Post extends React.Component {
     super();
     this.state = {
       post: {},
-      changed: false,
       edit: false,
     };
     this.handleClickDelete = this.handleClickDelete.bind(this);
@@ -45,27 +53,24 @@ export default class Post extends React.Component {
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
   }
 
-  async componentDidMount() {
-    // console.log('component did mount called');
-    this.loadData();
-  }
+  // async componentDidMount() {
+  //   // console.log('component did mount called');
+  //   this.loadData();
+  // }
 
-  componentDidUpdate(prevProps) {
-    console.log("component post updated");
-    const { post: prevPost } = prevProps;
-    const { post } = this.props;
-    console.log(post.comments);
-    if (prevPost.source !== post.source || prevPost.description !== post.description || post.comments.length !== prevPost.comments.length) {
-      this.loadData();
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   console.log('component post updated');
+  //   const { post: prevPost } = prevProps;
+  //   const { post } = this.state;
+  //   console.log(post.comments);
+  //   if (prevPost.source !== post.source || prevPost.description !== post.description || post.comments.length !== prevPost.comments.length) {
+  //     this.loadData();
+  //   }
+  // }
 
   async loadData() {
     console.log('loadData called');
     const { post: currentPost } = this.props;
-    const { changed } = this.state;
-    if (currentPost) this.setState({ post: currentPost });
-    console.log('changed in loadData is ', changed);
     const query = `query post($id: Int!){
       post(id: $id) {
         id
@@ -98,29 +103,28 @@ export default class Post extends React.Component {
     const data = await graphQLFetch(query, vars);
     if (data) {
       console.log('data fetched from loaddata');
-      this.setState({ post: data.post, changed: false });
+      this.setState({ post: data.post });
     }
   }
 
   async handleClickEdit() {
-    console.log('handleclickEdit called');
+    // console.log('handleclickEdit called');
     this.setState({ edit: true });
     // this.loadData();
   }
 
   async handleCancelEdit() {
-    console.log('handleCancelEdit called');
+    // console.log('handleCancelEdit called');
     this.setState({ edit: false });
     // this.loadData();
   }
 
-  async handleSubmitEdit(e) {
-    e.preventDefault();
-    console.log('handleSubmitEdit called');
+  async handleSubmitEdit() {
+    // console.log('handleSubmitEdit called');
     const { post } = this.props;
     const vars = { id: post.id, changes: { description: document.forms.postEdit.description.value } };
-    this.setState({ edit: false, changed: true });
-    console.log(document.forms.postEdit.description);
+    console.log(document.forms.postEdit.description.value);
+    this.setState({ edit: false });
     const query = `mutation postUpdate($id: Int!, $changes: PostUpdateInputs!){
       postUpdate(id: $id, changes: $changes) {
         id
@@ -151,7 +155,7 @@ export default class Post extends React.Component {
     `;
     const data = await graphQLFetch(query, vars);
     if (data) {
-      this.setState({ post: data.postUpdate, changed: true });
+      this.setState({ post: data.postUpdate });
     }
   }
 
@@ -170,7 +174,6 @@ export default class Post extends React.Component {
     //   post, showDescription,
     // } = this.state;
     let post;
-    const { HomepageloadData } = this.props;
     const { post: postState, edit } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
@@ -178,11 +181,6 @@ export default class Post extends React.Component {
       post = postState;
     }
     const showDescription = true;
-    // const commentsList = post.comments.map(comment => (
-    //   <span className="commentCard" key={comment.id}>
-    //     <h6>{`${comment.author.username}: ${comment.content}`}</h6>
-    //   </span>
-    // ));
     const commentsList = post.comments.map(comment => (
       <Comment comment={comment} key={comment.id} PostloadData={this.loadData} />
     ));
@@ -197,7 +195,6 @@ export default class Post extends React.Component {
     } else if (edit) {
       description = (
         <Card.Body>
-          <Card.Title />
           <Form name="postEdit">
             <Form.Group>
               <Form.Control as="textarea" name="description" rows={3} defaultValue={post.description} />
@@ -222,6 +219,12 @@ export default class Post extends React.Component {
       );
     }
 
+    const postNavBar = (
+      <Nav className="ml-auto">
+        <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer>
+        <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineGlobal /></h3></Nav.Link></LinkContainer>
+      </Nav>
+    );
 
     // console.log(description);
 
@@ -258,6 +261,7 @@ export default class Post extends React.Component {
           </Card.Header>
           <div>{description}</div>
           <Card.Img responsive="true" variant="top" fluid="true" src={post.source} />
+          <div>{postNavBar}</div>
           <div>{commentSection}</div>
         </Card>
         <br />
