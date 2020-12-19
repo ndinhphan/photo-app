@@ -1,3 +1,6 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable react/sort-comp */
 /* eslint-disable no-console */
 /* eslint-disable max-len */
 import React from 'react';
@@ -51,6 +54,7 @@ export default class Post extends React.Component {
     this.handleClickEdit = this.handleClickEdit.bind(this);
     this.handleCancelEdit = this.handleCancelEdit.bind(this);
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
+    this.handleSubmitComment = this.handleSubmitComment.bind(this);
   }
 
   // async componentDidMount() {
@@ -121,7 +125,13 @@ export default class Post extends React.Component {
 
   async handleSubmitEdit() {
     // console.log('handleSubmitEdit called');
-    const { post } = this.props;
+    let post;
+    const { post: postState } = this.state;
+    if (Object.keys(postState).length === 0 && postState.constructor === Object) {
+      post = this.props.post;
+    } else {
+      post = postState;
+    }
     const vars = { id: post.id, changes: { description: document.forms.postEdit.description.value } };
     console.log(document.forms.postEdit.description.value);
     this.setState({ edit: false });
@@ -160,13 +170,72 @@ export default class Post extends React.Component {
   }
 
   async handleClickDelete() {
-    const { post, HomepageloadData } = this.props;
+    const { HomepageloadData } = this.props;
+    let post;
+    const { post: postState } = this.state;
+    if (Object.keys(postState).length === 0 && postState.constructor === Object) {
+      post = this.props.post;
+    } else {
+      post = postState;
+    }
     const vars = { id: post.id };
     const query = `mutation postDelete($id:Int!){
       postDelete(id: $id)
     }`;
     await graphQLFetch(query, vars);
     HomepageloadData();
+  }
+
+  async handleSubmitComment() {
+    // console.log('handleSubmitEdit called');
+    let post;
+    const { post: postState } = this.state;
+    if (Object.keys(postState).length === 0 && postState.constructor === Object) {
+      post = this.props.post;
+    } else {
+      post = postState;
+    }
+    // TODO: UserId
+    const vars = { userId: 1, postId: post.id, content: document.forms.commentCreate.content.value };
+    // console.log(document.forms.commentCreate.content.value);
+    const query = `mutation commentCreate($userId: Int!, $postId: Int!, $content: String!) {
+      commentCreate(
+        comment: { userId: $userId, postId: $postId, content: $content }
+      ) {
+        post {
+          id
+          source
+          description
+          visibility
+          createdAt
+          userId
+          author {
+            source
+            firstname
+            lastname
+            username
+          }
+          comments {
+            id
+            content
+            createdAt
+            author {
+              source
+              username
+              firstname
+              lastname
+            }
+          }
+        }
+      }
+    }
+    `;
+    const data = await graphQLFetch(query, vars);
+    if (data) {
+      // console.log(data.commentCreate);
+      this.setState({ post: data.commentCreate.post });
+      document.forms.commentCreate.content.value = '';
+    }
   }
 
   render() {
@@ -210,11 +279,27 @@ export default class Post extends React.Component {
     } else if (!post.description) {
       description = '';
     }
+
     let commentSection;
     if (commentsList.length >= 1) {
       commentSection = (
         <Card.Footer>
           {commentsList}
+          <Row>
+            <Col>
+              <Form name="commentCreate">
+                <Form.Group>
+                  <Form.Control as="textarea" name="content" rows={2} placeholder="Comment" />
+                </Form.Group>
+              </Form>
+            </Col>
+            <Col>
+              <ButtonToolbar>
+                <Button type="submit" variant="primary" onClick={this.handleSubmitComment}>Submit</Button>
+              </ButtonToolbar>
+            </Col>
+          </Row>
+
         </Card.Footer>
       );
     }
