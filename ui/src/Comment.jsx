@@ -51,6 +51,7 @@ export default class Comment extends React.Component {
     this.setState({ commentEdit: event.target.value });
   }
 
+
   handleClickEdit() {
     // console.log('edit button clicked');
     this.setState({ edit: true });

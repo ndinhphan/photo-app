@@ -49,6 +49,7 @@ export default class Post extends React.Component {
     this.state = {
       post: {},
       comment: '',
+      postEdit: '',
       edit: false,
       toastMessage: '',
       toastType: 'success',
@@ -61,6 +62,7 @@ export default class Post extends React.Component {
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
     this.handleSubmitComment = this.handleSubmitComment.bind(this);
     this.handleCommentChange = this.handleCommentChange.bind(this);
+    this.handlePostEditChange = this.handlePostEditChange.bind(this);
 
     this.showSuccess = this.showSuccess.bind(this);
     this.showError = this.showError.bind(this);
@@ -156,17 +158,20 @@ export default class Post extends React.Component {
     // this.loadData();
   }
 
+  handlePostEditChange(event) {
+    this.setState({ postEdit: event.target.value });
+  }
+
   async handleSubmitEdit() {
     // console.log('handleSubmitEdit called');
     let post;
-    const { post: postState } = this.state;
+    const { post: postState, postEdit } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
     } else {
       post = postState;
     }
-    const vars = { id: post.id, changes: { description: document.forms.postEdit.description.value } };
-    console.log(document.forms.postEdit.description.value);
+    const vars = { id: post.id, changes: { description: postEdit } };
     this.setState({ edit: false });
     const query = `mutation postUpdate($id: Int!, $changes: PostUpdateInputs!){
       postUpdate(id: $id, changes: $changes) {
@@ -198,7 +203,8 @@ export default class Post extends React.Component {
     `;
     const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
-      this.setState({ post: data.postUpdate });
+      this.setState({ post: data.postUpdate, postEdit: '' });
+      this.showSuccess('Post updated!');
     }
   }
 
@@ -304,7 +310,7 @@ export default class Post extends React.Component {
         <Card.Body>
           <Form name="postEdit">
             <Form.Group>
-              <Form.Control as="textarea" name="description" rows={3} defaultValue={post.description} />
+              <Form.Control as="textarea" name="description" rows={3} defaultValue={post.description} onChange={this.handlePostEditChange} />
             </Form.Group>
           </Form>
 
