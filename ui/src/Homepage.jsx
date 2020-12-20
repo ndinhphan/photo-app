@@ -45,6 +45,7 @@ export default class Profile extends React.Component {
         createdAt
         userId
         author {
+          id
           source
           firstname
           lastname

@@ -96,6 +96,7 @@ export default class Post extends React.Component {
         createdAt
         userId
         author {
+          id
           source
           firstname
           lastname
@@ -149,13 +150,11 @@ export default class Post extends React.Component {
   async handleClickEdit() {
     // console.log('handleclickEdit called');
     this.setState({ edit: true });
-    // this.loadData();
   }
 
   async handleCancelEdit() {
     // console.log('handleCancelEdit called');
     this.setState({ edit: false });
-    // this.loadData();
   }
 
   handlePostEditChange(event) {
@@ -186,6 +185,7 @@ export default class Post extends React.Component {
           firstname
           lastname
           username
+          id
         }
         comments {
           id
@@ -196,6 +196,7 @@ export default class Post extends React.Component {
             username
             firstname
             lastname
+            id
           }
         }
       }
@@ -254,6 +255,7 @@ export default class Post extends React.Component {
             firstname
             lastname
             username
+            id
           }
           comments {
             id
@@ -264,6 +266,7 @@ export default class Post extends React.Component {
               username
               firstname
               lastname
+              id
             }
           }
         }
@@ -279,13 +282,10 @@ export default class Post extends React.Component {
   }
 
   render() {
-    // const {
-    //   post, showDescription,
-    // } = this.state;
     const {
       toastMessage, toastType, toastVisible,
     } = this.state;
-
+    const { onProfile } = this.props;
     let post;
     const { post: postState, edit, comment } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
@@ -293,12 +293,19 @@ export default class Post extends React.Component {
     } else {
       post = postState;
     }
-    const showDescription = true;
+    if (onProfile) {
+      console.log('post is rendered in profile');
+      return (
+        <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
+          <Card.Img fluid="true" responsive="true" src={post.source} />
+        </Card>
+      );
+    }
     const commentsList = post.comments.map(comment => (
       <Comment comment={comment} key={comment.id} PostloadData={this.loadData} />
     ));
     let description = '';
-    if (showDescription && !edit && post.description) {
+    if (!edit && post.description) {
       description = (
         <Card.Body>
           <Card.Title />
@@ -354,9 +361,11 @@ export default class Post extends React.Component {
         <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineGlobal /></h3></Nav.Link></LinkContainer>
       </Nav>
     );
-
+    console.log(post.author);
     // console.log(description);
-
+    const usernameLink = (
+      <LinkContainer to={`/profile/${post.author.id}`}><a><h6 id="username">{`${post.author.username}`}</h6></a></LinkContainer>
+    );
     return (
       <>
         <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
@@ -366,7 +375,7 @@ export default class Post extends React.Component {
               <Col xs={0}>
                 <Row>
                   <Col>
-                    <h6>{`${post.author.username}`}</h6>
+                    {usernameLink}
                     <h6>{`${handleDateDifference(post.createdAt)}`}</h6>
                   </Col>
                   <Col>

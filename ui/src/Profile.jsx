@@ -17,7 +17,21 @@ export default class Profile extends React.Component {
       user: {},
       posts: [],
     };
-    this.loadData = this.loadData.bind(this);
+  }
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { reloadPostList, resetReloadPostList } = this.props;
+    const { posts } = this.state;
+    const { posts: prevPosts } = prevState;
+    if (posts.length !== prevPosts.length) this.loadData();
+    if (prevProps.reloadPostList !== reloadPostList) {
+      this.loadData();
+      resetReloadPostList();
+    }
   }
 
   async loadData() {
@@ -41,59 +55,30 @@ export default class Profile extends React.Component {
     }`;
     const { match: { params: { userId: queryId } } } = this.props;
     const id = parseInt(queryId, 10);
-    const data = graphQLFetch(query, { id });
+    const data = await graphQLFetch(query, { id });
+    if (data) {
+      this.setState({ user: data.user, posts: data.user.posts });
+    }
   }
 
   render() {
-    const { match: { params: { userId } } } = this.props;
+    const { user, posts } = this.state;
+    console.log(posts);
+    let postCards;
+    if (posts.length > 0) {
+      postCards = posts.map(post => (
+        <Post post={post} key={post.id} onProfile />
+      ));
+    }
     return (
       <>
-        {userId}
+        <div>
+          <h3>{`placeholder for ${user.username}'s profile`}</h3>
+          <h5>{JSON.stringify(user)}</h5>
+        </div>
         <>
           <CardDeck>
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
-
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
-
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
-
-          </CardDeck>
-          <br />
-
-          <CardDeck>
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
-
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
-
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
-
-          </CardDeck>
-          <br />
-
-          <CardDeck>
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
-
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
-
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-            </Card>
+            {postCards}
           </CardDeck>
         </>
 
