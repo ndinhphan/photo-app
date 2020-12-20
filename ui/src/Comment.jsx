@@ -12,6 +12,7 @@ export default class Comment extends React.Component {
     super();
     this.state = {
       comment: {},
+      commentEdit: '',
       edit: false,
       toastMessage: '',
       toastType: 'success',
@@ -21,6 +22,8 @@ export default class Comment extends React.Component {
     this.handleClickEdit = this.handleClickEdit.bind(this);
     this.handleCancelEdit = this.handleCancelEdit.bind(this);
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
+    this.handleCommentChange = this.handleCommentChange.bind(this);
+
     this.showSuccess = this.showSuccess.bind(this);
     this.showError = this.showError.bind(this);
     this.dismissToast = this.dismissToast.bind(this);
@@ -42,6 +45,10 @@ export default class Comment extends React.Component {
     if (data) {
       PostloadData({ message: 'Comment deleted!' });
     }
+  }
+
+  handleCommentChange(event) {
+    this.setState({ commentEdit: event.target.value });
   }
 
   handleClickEdit() {
@@ -75,7 +82,9 @@ export default class Comment extends React.Component {
   async handleSubmitEdit() {
     // console.log('handleSubmitEdit called');
     const { comment } = this.props;
-    const vars = { id: comment.id, changes: { content: document.forms.commentEdit.content.value } };
+    const { commentEdit } = this.state;
+    const vars = { id: comment.id, changes: { content: commentEdit } };
+
     this.setState({ edit: false });
     const query = `mutation commentUpdate($id:Int!,$changes:CommentUpdateInputs!){
       commentUpdate(id: $id, changes:$changes) {
@@ -97,7 +106,7 @@ export default class Comment extends React.Component {
     }`;
     const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
-      this.setState({ comment: data.commentUpdate });
+      this.setState({ comment: data.commentUpdate, commentEdit: '' });
       this.showSuccess('Comment updated!');
     }
   }
@@ -131,7 +140,7 @@ export default class Comment extends React.Component {
           <Col xs={10} md={11} className="align-comment">
             <Form name="commentEdit">
               <Form.Group>
-                <Form.Control as="textarea" name="content" defaultValue={comment.content} />
+                <Form.Control as="textarea" name="content" defaultValue={comment.content} onChange={this.handleCommentChange} />
               </Form.Group>
             </Form>
           </Col>
