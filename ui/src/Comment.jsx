@@ -5,6 +5,7 @@ import {
 
 import { AiOutlineMore } from 'react-icons/ai';
 import graphQLFetch from './graphQLFetch.js';
+import Toast from './Toast.jsx';
 
 export default class Comment extends React.Component {
   constructor() {
@@ -12,11 +13,17 @@ export default class Comment extends React.Component {
     this.state = {
       comment: {},
       edit: false,
+      toastMessage: '',
+      toastType: 'success',
+      toastVisible: false,
     };
     this.handleClickDelete = this.handleClickDelete.bind(this);
     this.handleClickEdit = this.handleClickEdit.bind(this);
     this.handleCancelEdit = this.handleCancelEdit.bind(this);
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
+    this.showSuccess = this.showSuccess.bind(this);
+    this.showError = this.showError.bind(this);
+    this.dismissToast = this.dismissToast.bind(this);
     // this.handleClickReport = this.handleClickReport.bind(this);
     // this.loadData = this.loadData.bind(this);
   }
@@ -31,8 +38,10 @@ export default class Comment extends React.Component {
     const query = `mutation commentDelete($id:Int!){
       commentDelete(id: $id)
     }`;
-    await graphQLFetch(query, vars);
-    PostloadData();
+    const data = await graphQLFetch(query, vars, this.showError);
+    if (data) {
+      PostloadData({ message: 'Comment deleted!' });
+    }
   }
 
   handleClickEdit() {
@@ -43,6 +52,25 @@ export default class Comment extends React.Component {
   handleCancelEdit() {
     this.setState({ edit: false });
   }
+
+  showSuccess(message) {
+    this.setState({
+      toastVisible: true, toastMessage: message, toastType: 'success',
+    });
+  }
+
+  showError(message) {
+    this.setState({
+      toastVisible: true, toastMessage: message, toastType: 'danger',
+    });
+  }
+
+  dismissToast() {
+    this.setState({
+      toastVisible: false,
+    });
+  }
+
 
   async handleSubmitEdit() {
     // console.log('handleSubmitEdit called');
@@ -67,9 +95,10 @@ export default class Comment extends React.Component {
         }
       }
     }`;
-    const data = await graphQLFetch(query, vars);
+    const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
       this.setState({ comment: data.commentUpdate });
+      this.showSuccess('Comment updated!');
     }
   }
   // handleClickReport() {
@@ -81,6 +110,9 @@ export default class Comment extends React.Component {
   // }
 
   render() {
+    const {
+      toastMessage, toastType, toastVisible,
+    } = this.state;
     let comment;
     const { comment: commentState, edit } = this.state;
     if (Object.keys(commentState).length === 0 && commentState.constructor === Object) {
@@ -91,7 +123,7 @@ export default class Comment extends React.Component {
     let commentContent = '';
     if (!edit) {
       commentContent = (
-        <h6>{comment.content}</h6>
+        comment.content
       );
     } else if (edit) {
       commentContent = (
@@ -113,32 +145,43 @@ export default class Comment extends React.Component {
     }
 
     const defaultContent = (
-      <Row>
-        <Col xs={10} md={11} className="align-comment">
-          <h6>
-            {`${comment.author.username}:`}
-          </h6>
-          {commentContent}
-        </Col>
-        <Col xs={2} md={1}>
-          <Dropdown>
-            <Dropdown.Toggle id="dropdown-basic">
-              <AiOutlineMore />
-            </Dropdown.Toggle>
+      <>
+        <Row>
+          <Col xs={10} md={11} className="align-comment">
+            <h6>
+              {`${comment.author.username}:`}
+              {' '}
+              {commentContent}
+            </h6>
+          </Col>
+          <Col xs={2} md={1}>
+            <Dropdown>
+              <Dropdown.Toggle id="dropdown-basic">
+                <AiOutlineMore />
+              </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
-              <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Col>
-      </Row>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
+                <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
+                <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Col>
+        </Row>
+      </>
+
     );
 
     return (
       <div>
         { defaultContent }
+        <Toast
+          showing={toastVisible}
+          onDismiss={this.dismissToast}
+          variant={toastType}
+        >
+          {toastMessage}
+        </Toast>
       </div>
     );
   }

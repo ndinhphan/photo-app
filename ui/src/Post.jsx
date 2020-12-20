@@ -16,6 +16,7 @@ import {
   AiOutlineGlobal, AiOutlineHeart, AiOutlineMore,
 } from 'react-icons/ai';
 
+import Toast from './Toast.jsx';
 
 import graphQLFetch from './graphQLFetch.js';
 import Comment from './Comment.jsx';
@@ -47,7 +48,11 @@ export default class Post extends React.Component {
     super();
     this.state = {
       post: {},
+      comment: '',
       edit: false,
+      toastMessage: '',
+      toastType: 'success',
+      toastVisible: false,
     };
     this.handleClickDelete = this.handleClickDelete.bind(this);
     this.loadData = this.loadData.bind(this);
@@ -55,6 +60,11 @@ export default class Post extends React.Component {
     this.handleCancelEdit = this.handleCancelEdit.bind(this);
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
     this.handleSubmitComment = this.handleSubmitComment.bind(this);
+    this.handleCommentChange = this.handleCommentChange.bind(this);
+
+    this.showSuccess = this.showSuccess.bind(this);
+    this.showError = this.showError.bind(this);
+    this.dismissToast = this.dismissToast.bind(this);
   }
 
   // async componentDidMount() {
@@ -72,7 +82,7 @@ export default class Post extends React.Component {
   //   }
   // }
 
-  async loadData() {
+  async loadData({ message }) {
     console.log('loadData called');
     const { post: currentPost } = this.props;
     const query = `query post($id: Int!){
@@ -104,11 +114,34 @@ export default class Post extends React.Component {
     }
     `;
     const vars = { id: currentPost.id };
-    const data = await graphQLFetch(query, vars);
+    const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
       console.log('data fetched from loaddata');
+      this.showSuccess(message);
       this.setState({ post: data.post });
     }
+  }
+
+  showSuccess(message) {
+    this.setState({
+      toastVisible: true, toastMessage: message, toastType: 'success',
+    });
+  }
+
+  showError(message) {
+    this.setState({
+      toastVisible: true, toastMessage: message, toastType: 'danger',
+    });
+  }
+
+  dismissToast() {
+    this.setState({
+      toastVisible: false,
+    });
+  }
+
+  handleCommentChange(event) {
+    this.setState({ comment: event.target.value });
   }
 
   async handleClickEdit() {
@@ -163,7 +196,7 @@ export default class Post extends React.Component {
       }
     }
     `;
-    const data = await graphQLFetch(query, vars);
+    const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
       this.setState({ post: data.postUpdate });
     }
@@ -182,22 +215,23 @@ export default class Post extends React.Component {
     const query = `mutation postDelete($id:Int!){
       postDelete(id: $id)
     }`;
-    await graphQLFetch(query, vars);
+    await graphQLFetch(query, vars, this.showError);
     HomepageloadData();
   }
 
   async handleSubmitComment() {
-    // console.log('handleSubmitEdit called');
+    console.log('handleSubmitComment called');
     let post;
-    const { post: postState } = this.state;
+    const { post: postState, comment } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
     } else {
       post = postState;
     }
-    // TODO: UserId
-    const vars = { userId: 1, postId: post.id, content: document.forms.commentCreate.content.value };
-    // console.log(document.forms.commentCreate.content.value);
+    // TODO: UserId, handleError
+    const vars = { userId: 1, postId: post.id, content: comment };
+    console.log(comment);
+    console.log(vars);
     const query = `mutation commentCreate($userId: Int!, $postId: Int!, $content: String!) {
       commentCreate(
         comment: { userId: $userId, postId: $postId, content: $content }
@@ -230,11 +264,11 @@ export default class Post extends React.Component {
       }
     }
     `;
-    const data = await graphQLFetch(query, vars);
+    const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
       // console.log(data.commentCreate);
-      this.setState({ post: data.commentCreate.post });
-      document.forms.commentCreate.content.value = '';
+      this.setState({ post: data.commentCreate.post, comment: '' });
+      // document.forms.commentCreate.content.value = '';
     }
   }
 
@@ -242,8 +276,12 @@ export default class Post extends React.Component {
     // const {
     //   post, showDescription,
     // } = this.state;
+    const {
+      toastMessage, toastType, toastVisible,
+    } = this.state;
+
     let post;
-    const { post: postState, edit } = this.state;
+    const { post: postState, edit, comment } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
     } else {
@@ -281,15 +319,15 @@ export default class Post extends React.Component {
     }
 
     let commentSection;
-    if (commentsList.length >= 1) {
+    if (commentsList.length >= 0) {
       commentSection = (
-        <Card.Footer>
+        <Card.Footer id="commentSection">
           {commentsList}
           <Row>
             <Col>
               <Form name="commentCreate">
                 <Form.Group>
-                  <Form.Control as="textarea" name="content" rows={2} placeholder="Comment" />
+                  <Form.Control as="textarea" name="content" key={post.id} rows={2} onChange={this.handleCommentChange} value={comment} placeholder="Comment" />
                 </Form.Group>
               </Form>
             </Col>
@@ -348,6 +386,15 @@ export default class Post extends React.Component {
           <Card.Img responsive="true" variant="top" fluid="true" src={post.source} />
           <div>{postNavBar}</div>
           <div>{commentSection}</div>
+          <div>
+            <Toast
+              showing={toastVisible}
+              onDismiss={this.dismissToast}
+              variant={toastType}
+            >
+              {toastMessage}
+            </Toast>
+          </div>
         </Card>
         <br />
       </>

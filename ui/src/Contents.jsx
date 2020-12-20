@@ -17,7 +17,7 @@ export default class Contents extends React.Component {
       <Switch>
         <Redirect exact from="/" to="/home" />
         <Route path="/home" render={props => <Homepage {...props} reloadPostList={reloadPostList} resetReloadPostList={resetReloadPostList} />} />
-        <Route path="/profile" component={Profile} />
+        <Route path="/profile/:userId" component={Profile} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         {/* <Route path="/users/:userid" component={Profile} /> */}

@@ -94,7 +94,7 @@ function NavBar(props) {
             <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHome /></h3></Nav.Link></LinkContainer>
             <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer>
             <NavDropdown title={profileDropdown}>
-              <LinkContainer exact to="/profile"><NavDropdown.Item href="#action/3.1">UserProfile</NavDropdown.Item></LinkContainer>
+              <LinkContainer exact to="/profile/1"><NavDropdown.Item href="#action/3.1">UserProfile</NavDropdown.Item></LinkContainer>
               <NavDropdown.Item href="#action/3.3">Placeholder</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={() => { localStorage.removeItem('AUTH_TOKEN'); }} href="/login">Log out</NavDropdown.Item>
