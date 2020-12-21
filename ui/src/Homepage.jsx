@@ -33,6 +33,21 @@ export default class Profile extends React.Component {
   }
 
   async loadData() {
+    await fetch('/api/home', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          token: localStorage.getItem('AUTH_TOKEN')
+      })
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+        if (!response.authorized) window.location.href = '/login'
+    });
+
     const query = `query {
       postList(visibility: Public) {
         id
@@ -68,7 +83,7 @@ export default class Profile extends React.Component {
   }
 
   render() {
-    if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/home' to='/login' /></Switch>)
+    // if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/home' to='/login' /></Switch>)
 
     const { posts } = this.state;
     let postCards;

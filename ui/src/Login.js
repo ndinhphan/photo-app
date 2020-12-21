@@ -36,7 +36,6 @@ class Login extends Component {
             body: JSON.stringify({ 
                 emailOrUsername, 
                 password,
-                // token: localStorage.getItem('AUTH_TOKEN')
             })
         })
         .then(response => response.json())
@@ -46,13 +45,14 @@ class Login extends Component {
                 this.setState({message: response.message})
                 localStorage.setItem('AUTH_TOKEN', response.token);
                 console.log(localStorage.getItem('AUTH_TOKEN'));
+                window.location.href = '/home'
             }
         })
     }
 
 
     render() {
-        if (localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/login' to='/home' /></Switch>)
+        // if (localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/login' to='/home' /></Switch>)
 
         let message;
         if (this.state.message) {

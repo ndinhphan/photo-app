@@ -36,8 +36,7 @@ async function verifyUser(user, inputPassword, res) {
     if (user) {
         if(bcrypt.compareSync(inputPassword, user.dataValues.password)) {
             const userData = {
-                name: user.dataValues.username,
-                email: user.dataValues.email
+                id: user.dataValues.id
             };
             const token = await jwtToken.generateToken(userData);
 
