@@ -11,9 +11,9 @@ let isAuth = async (req, res, next) => {
       const decoded = await jwtToken.verifyToken(tokenFromClient, secretKey);
       console.log("decode conpleted____________________________________________________");
       console.log("decoded data: ");
-      console.log(decoded);
+      console.log(decoded.data);
       console.log("\n\n");
-      req.body.token = decoded;
+      req.body.token = decoded.data;
       next();
     } catch (error) {
       return res.status(401).json({
