@@ -57,7 +57,7 @@ class CreatePostNavItem extends React.Component {
   }
 
 
-  async getImage() {
+  getImage() {
     const { files } = this.state;
     const storageRef = firebase.storage().ref();
     return storageRef.child(`images/${files[0].name}`).getDownloadURL();
@@ -67,19 +67,19 @@ class CreatePostNavItem extends React.Component {
     // });
   }
 
-  async handleSave() {
+  handleSave() {
     const bucketName = 'images';
     const { files } = this.state;
     const file = files[0];
     console.log('file from handlesave:', file);
     let downloadURL;
-    const storageRef = await firebase.storage().ref(`${bucketName}/${file.name}`);
-    const uploadTask = await storageRef.put(file);
+    const storageRef = firebase.storage().ref(`${bucketName}/${file.name}`);
+    const uploadTask = storageRef.put(file);
     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
       () => {
         downloadURL = uploadTask.snapshot;
       });
-    return uploadTask;
+    return true;
   }
 
   handleChange(files) {
