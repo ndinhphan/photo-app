@@ -85,7 +85,7 @@ export default class Post extends React.Component {
   // }
 
   async loadData({ message }) {
-    console.log('loadData called');
+    // console.log('loadData called');
     const { post: currentPost } = this.props;
     const query = `query post($id: Int!){
       post(id: $id) {
@@ -119,7 +119,7 @@ export default class Post extends React.Component {
     const vars = { id: currentPost.id };
     const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
-      console.log('data fetched from loaddata');
+      // console.log('data fetched from loaddata');
       this.showSuccess(message);
       this.setState({ post: data.post });
     }
@@ -227,7 +227,7 @@ export default class Post extends React.Component {
   }
 
   async handleSubmitComment() {
-    console.log('handleSubmitComment called');
+    // console.log('handleSubmitComment called');
     let post;
     const { post: postState, comment } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
@@ -237,8 +237,8 @@ export default class Post extends React.Component {
     }
     // TODO: UserId, handleError
     const vars = { userId: 1, postId: post.id, content: comment };
-    console.log(comment);
-    console.log(vars);
+    // console.log(comment);
+    // console.log(vars);
     const query = `mutation commentCreate($userId: Int!, $postId: Int!, $content: String!) {
       commentCreate(
         comment: { userId: $userId, postId: $postId, content: $content }
@@ -361,7 +361,7 @@ export default class Post extends React.Component {
         <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineGlobal /></h3></Nav.Link></LinkContainer>
       </Nav>
     );
-    console.log(post.author);
+    // console.log(post.author);
     // console.log(description);
     const usernameLink = (
       <LinkContainer to={`/profile/${post.author.id}`}><a><h6 id="username">{`${post.author.username}`}</h6></a></LinkContainer>
