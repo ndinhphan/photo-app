@@ -8,6 +8,27 @@ import {
   Card, Accordion, Button, Row, Col, Image, CardDeck,
 } from 'react-bootstrap';
 
+async function loadData() {
+    let userId;
+    
+    await fetch('/api/home', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        token: localStorage.getItem('AUTH_TOKEN')
+    })
+  })
+  .then(response => response.json())
+  .then(response => {
+      console.log(response);
+      if (!response.authorized) window.location.href = '/login'
+      else userId = response.userId
+    });
+
+  //TODO: Load profile data
+}
 export default function Profile() {
   return (
     <>

@@ -1,10 +1,11 @@
 
 let home = (req, res) => {
-    console.log("home: ");
-    console.log(req.body.token);
+    // console.log(req.body.token.data.id);
+    // console.log(req.body.token.id);
     res.json({
         authorized: true,
-        message: 'Verified.'
+        message: 'Verified.',
+        userId: req.body.token.id
     });
 }
 

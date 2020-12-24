@@ -33,6 +33,8 @@ export default class Profile extends React.Component {
   }
 
   async loadData() {
+    let userId;
+
     await fetch('/api/home', {
       method: 'POST',
       headers: {
@@ -46,6 +48,7 @@ export default class Profile extends React.Component {
     .then(response => {
         console.log(response);
         if (!response.authorized) window.location.href = '/login'
+        else userId = response.userId
     });
 
     const query = `query {
