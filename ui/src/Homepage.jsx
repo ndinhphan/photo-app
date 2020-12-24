@@ -35,7 +35,7 @@ export default class Profile extends React.Component {
   async loadData() {
     let userId;
 
-    await fetch('/api/home', {
+    await fetch('/api/service', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'

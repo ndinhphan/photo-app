@@ -10,8 +10,8 @@ import {
 
 async function loadData() {
     let userId;
-    
-    await fetch('/api/home', {
+
+    await fetch('/api/service', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
