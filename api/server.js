@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const AuthMiddleWare = require('./AuthMiddleware');
 const loginController = require('./controllers/login');
 const registerController = require('./controllers/register');
-const homeController = require('./controllers/home');
+const serviceController = require('./controllers/service');
 
 const port = process.env.API_SERVER_PORT || 3000;
 
@@ -30,4 +30,4 @@ app.post('/api/login', loginController.login);
 app.post('/api/register', registerController.register);
 
 app.use(AuthMiddleWare.isAuth);
-app.post('/api/home', homeController.home)
+app.post('/api/service', serviceController.service)

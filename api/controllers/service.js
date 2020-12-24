@@ -1,5 +1,5 @@
 
-let home = (req, res) => {
+let service = (req, res) => {
     // console.log(req.body.token.data.id);
     // console.log(req.body.token.id);
     res.json({
@@ -9,4 +9,4 @@ let home = (req, res) => {
     });
 }
 
-module.exports = { home }
+module.exports = { service }
