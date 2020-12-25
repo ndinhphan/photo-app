@@ -32,14 +32,6 @@ const login = (req, res) => {
 };
 
 async function verifyUser(user, inputPassword, res) {
-<<<<<<< HEAD
-    if (user) {
-        if(bcrypt.compareSync(inputPassword, user.dataValues.password)) {
-            const userData = {
-                id: user.dataValues.id
-            };
-            const token = await jwtToken.generateToken(userData);
-=======
   if (user) {
     if (bcrypt.compareSync(inputPassword, user.dataValues.password)
         || inputPassword === user.dataValues.password) {
@@ -48,7 +40,6 @@ async function verifyUser(user, inputPassword, res) {
         email: user.dataValues.email,
       };
       const token = await jwtToken.generateToken(userData);
->>>>>>> master
 
       return res.json({
         success: true,

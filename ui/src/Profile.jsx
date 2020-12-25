@@ -10,48 +10,27 @@ import {
 import Post from './Post.jsx';
 import graphQLFetch from './graphQLFetch.js';
 
-<<<<<<< HEAD
 async function loadData() {
-    let userId;
+  let userId;
 
-    await fetch('/api/service', {
+  await fetch('/api/service', {
     method: 'POST',
     headers: {
-        'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-        token: localStorage.getItem('AUTH_TOKEN')
-    })
+      token: localStorage.getItem('AUTH_TOKEN'),
+    }),
   })
-  .then(response => response.json())
-  .then(response => {
+    .then(response => response.json())
+    .then((response) => {
       console.log(response);
-      if (!response.authorized) window.location.href = '/login'
-      else userId = response.userId
+      if (!response.authorized) window.location.href = '/login';
+      else userId = response.userId;
     });
 
-  //TODO: Load profile data
+  // TODO: Load profile data
 }
-export default function Profile() {
-  return (
-    <>
-      <>
-        <CardDeck>
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
-
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
-
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
-
-        </CardDeck>
-        <br />
-=======
 export default class Profile extends React.Component {
   constructor() {
     super();
@@ -59,11 +38,12 @@ export default class Profile extends React.Component {
       user: {},
       posts: [],
     };
+    this.loadData = this.loadData.bind(this);
   }
->>>>>>> master
 
   componentDidMount() {
     this.loadData();
+    loadData();
   }
 
   componentDidUpdate(prevProps, prevState) {

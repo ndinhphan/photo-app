@@ -41,18 +41,18 @@ export default class Profile extends React.Component {
     await fetch('/api/service', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-          token: localStorage.getItem('AUTH_TOKEN')
-      })
+        token: localStorage.getItem('AUTH_TOKEN'),
+      }),
     })
-    .then(response => response.json())
-    .then(response => {
+      .then(response => response.json())
+      .then((response) => {
         console.log(response);
-        if (!response.authorized) window.location.href = '/login'
-        else userId = response.userId
-    });
+        if (!response.authorized) window.location.href = '/login';
+        else userId = response.userId;
+      });
 
     const query = `query {
       postList(visibility: Public) {
@@ -90,11 +90,7 @@ export default class Profile extends React.Component {
   }
 
   render() {
-<<<<<<< HEAD
-    // if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/home' to='/login' /></Switch>)
-=======
     if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from="/home" to="/login" /></Switch>);
->>>>>>> master
 
     const { posts } = this.state;
     let postCards;
