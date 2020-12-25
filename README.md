@@ -269,6 +269,27 @@ mutation {
 }
 ```
 
+```
+mutation {
+  commentUpdate(id: 1, changes: { content: "haha poopy!!!" }) {
+    id
+    content
+    createdAt
+    author {
+      firstname
+      username
+      lastname
+    }
+    post {
+      source
+      description
+      createdAt
+      userId
+    }
+  }
+}
+
+```
 
 ```
 mutation{

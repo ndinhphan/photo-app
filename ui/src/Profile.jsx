@@ -7,7 +7,10 @@ import { LinkContainer } from 'react-router-bootstrap';
 import {
   Card, Accordion, Button, Row, Col, Image, CardDeck,
 } from 'react-bootstrap';
+import Post from './Post.jsx';
+import graphQLFetch from './graphQLFetch.js';
 
+<<<<<<< HEAD
 async function loadData() {
     let userId;
 
@@ -48,40 +51,83 @@ export default function Profile() {
 
         </CardDeck>
         <br />
+=======
+export default class Profile extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      user: {},
+      posts: [],
+    };
+  }
+>>>>>>> master
 
-        <CardDeck>
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
+  componentDidMount() {
+    this.loadData();
+  }
 
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
+  componentDidUpdate(prevProps, prevState) {
+    const { reloadPostList, resetReloadPostList } = this.props;
+    const { posts } = this.state;
+    const { posts: prevPosts } = prevState;
+    if (posts.length !== prevPosts.length) this.loadData();
+    if (prevProps.reloadPostList !== reloadPostList) {
+      this.loadData();
+      resetReloadPostList();
+    }
+  }
 
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
+  async loadData() {
+    const query = `query user($id: Int!) {
+      user(id: $id) {
+        firstname
+        username
+        lastname
+        source
+        description
+        createdAt
+        posts{
+          id
+          source
+          description
+          visibility
+          createdAt
+          userId
+        }
+      }
+    }`;
+    const { match: { params: { userId: queryId } } } = this.props;
+    const id = parseInt(queryId, 10);
+    const data = await graphQLFetch(query, { id });
+    if (data) {
+      this.setState({ user: data.user, posts: data.user.posts });
+    }
+  }
 
-        </CardDeck>
-        <br />
+  render() {
+    const { user, posts } = this.state;
+    console.log(posts);
+    let postCards;
+    if (posts.length > 0) {
+      postCards = posts.map(post => (
+        <Post post={post} key={post.id} onProfile />
+      ));
+    }
+    return (
+      <>
+        <div>
+          <h3>{`placeholder for ${user.username}'s profile`}</h3>
+          <h5>{JSON.stringify(user)}</h5>
+        </div>
+        <>
+          <CardDeck>
+            {postCards}
+          </CardDeck>
+        </>
 
-        <CardDeck>
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
 
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
-
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img responsive variant="top" fluid src="https://via.placeholder.com/650" />
-          </Card>
-        </CardDeck>
       </>
 
-
-    </>
-
-  );
+    );
+  }
 }

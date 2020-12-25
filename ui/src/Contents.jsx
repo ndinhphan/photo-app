@@ -3,7 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Profile from './Profile.jsx';
 import Homepage from './Homepage.jsx';
 import Register from './Register.jsx';
-import Login from './Login';
+import Login from './Login.jsx';
 
 export default class Contents extends React.Component {
   constructor() {
@@ -17,7 +17,7 @@ export default class Contents extends React.Component {
       <Switch>
         <Redirect exact from="/" to="/home" />
         <Route path="/home" render={props => <Homepage {...props} reloadPostList={reloadPostList} resetReloadPostList={resetReloadPostList} />} />
-        <Route path="/profile" component={Profile} />
+        <Route path="/profile/:userId" render={props => <Profile {...props} reloadPostList={reloadPostList} resetReloadPostList={resetReloadPostList} />} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         {/* <Route path="/users/:userid" component={Profile} /> */}

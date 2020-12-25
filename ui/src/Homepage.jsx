@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import URLSearchParams from 'url-search-params';
-import Switch from "react-bootstrap/esm/Switch";
-import { Redirect } from "react-router-dom";
-import { Route } from 'react-router-dom';
+import Switch from 'react-bootstrap/esm/Switch';
+import { Redirect, Route } from 'react-router-dom';
+
 import { LinkContainer } from 'react-router-bootstrap';
 import {
   Card, Accordion, Button, Row, Col, Image,
@@ -24,8 +24,11 @@ export default class Profile extends React.Component {
     this.loadData();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { reloadPostList, resetReloadPostList } = this.props;
+    const { posts } = this.state;
+    const { posts: prevPosts } = prevState;
+    if (posts.length !== prevPosts.length) this.loadData();
     if (prevProps.reloadPostList !== reloadPostList) {
       this.loadData();
       resetReloadPostList();
@@ -60,6 +63,7 @@ export default class Profile extends React.Component {
         createdAt
         userId
         author {
+          id
           source
           firstname
           lastname
@@ -86,7 +90,11 @@ export default class Profile extends React.Component {
   }
 
   render() {
+<<<<<<< HEAD
     // if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/home' to='/login' /></Switch>)
+=======
+    if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from="/home" to="/login" /></Switch>);
+>>>>>>> master
 
     const { posts } = this.state;
     let postCards;
