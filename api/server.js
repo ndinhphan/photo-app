@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const AuthMiddleWare = require('./AuthMiddleware');
 const loginController = require('./controllers/login');
 const registerController = require('./controllers/register');
+const serviceController = require('./controllers/service');
 
 const port = process.env.API_SERVER_PORT || 3000;
 
@@ -24,7 +25,9 @@ installHandler(app);
 }());
 
 app.use(bodyParser.json());
-// app.use(AuthMiddleWare.isAuth);
 
 app.post('/api/login', loginController.login);
 app.post('/api/register', registerController.register);
+
+app.use(AuthMiddleWare.isAuth);
+app.post('/api/service', serviceController.service)

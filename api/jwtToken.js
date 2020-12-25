@@ -18,7 +18,7 @@ const generateToken = user => new Promise((resolve, reject) => {
       if (error) {
         return reject(error);
       }
-      resolve(token);
+      return resolve(token);
     },
   );
 });

@@ -36,6 +36,24 @@ export default class Profile extends React.Component {
   }
 
   async loadData() {
+    let userId;
+
+    await fetch('/api/service', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem('AUTH_TOKEN'),
+      }),
+    })
+      .then(response => response.json())
+      .then((response) => {
+        console.log(response);
+        if (!response.authorized) window.location.href = '/login';
+        else userId = response.userId;
+      });
+
     const query = `query {
       postList(visibility: Public) {
         id

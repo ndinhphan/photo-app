@@ -10,6 +10,27 @@ import {
 import Post from './Post.jsx';
 import graphQLFetch from './graphQLFetch.js';
 
+async function loadData() {
+  let userId;
+
+  await fetch('/api/service', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      token: localStorage.getItem('AUTH_TOKEN'),
+    }),
+  })
+    .then(response => response.json())
+    .then((response) => {
+      console.log(response);
+      if (!response.authorized) window.location.href = '/login';
+      else userId = response.userId;
+    });
+
+  // TODO: Load profile data
+}
 export default class Profile extends React.Component {
   constructor() {
     super();
@@ -17,10 +38,12 @@ export default class Profile extends React.Component {
       user: {},
       posts: [],
     };
+    this.loadData = this.loadData.bind(this);
   }
 
   componentDidMount() {
     this.loadData();
+    loadData();
   }
 
   componentDidUpdate(prevProps, prevState) {
