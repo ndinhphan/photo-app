@@ -5,11 +5,11 @@ const { getDb } = require('./db_mysql.js');
 function validate(comment) {
   const errors = [];
   // change later
-  if (comment.description < 0) {
-    errors.push('Input is required');
+  if (comment.content.length === 0) {
+    errors.push('Comment cannot be empty');
   }
   if (errors.length > 0) {
-    throw new UserInputError('Invalid input(s): ', { errors });
+    throw new UserInputError('Invalid input(s)', { errors });
   }
 }
 
@@ -40,10 +40,11 @@ async function create(_, { comment }) {
 
 async function update(_, { id, changes }) {
   const db = getDb();
-  if (changes.description) {
+  if (changes) {
     const comment = await db.Comment.findByPk(id);
     Object.assign(comment, changes);
     validate(comment);
+    // console.log("Comment has been validated: ", comment );
   }
   await db.Comment.update(changes, { where: { id } });
   return db.Comment.findByPk(id);
