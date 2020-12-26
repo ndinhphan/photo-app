@@ -21,7 +21,6 @@ function Footer() {
   );
 }
 
-
 export default class Page extends React.Component {
   constructor() {
     super();
