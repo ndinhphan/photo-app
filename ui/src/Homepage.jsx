@@ -11,7 +11,7 @@ import {
 import Post from './Post.jsx';
 import graphQLFetch from './graphQLFetch.js';
 
-export default class Profile extends React.Component {
+export default class Homepage extends React.Component {
   constructor() {
     super();
     this.state = {
