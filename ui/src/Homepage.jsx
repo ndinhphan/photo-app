@@ -86,8 +86,6 @@ export default class Profile extends React.Component {
   }
 
   render() {
-    // if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from='/home' to='/login' /></Switch>)
-
     const { posts } = this.state;
     let postCards;
     if (posts.length > 0) {
