@@ -37,6 +37,8 @@ class CreatePostNavItem extends React.Component {
 
       files: null,
       preview: null,
+
+      imageUrl: '',
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showModal = this.showModal.bind(this);
@@ -47,7 +49,7 @@ class CreatePostNavItem extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.getImage = this.getImage.bind(this);
+    this.setState = this.setState.bind(this);
   }
 
   // firebase functions
@@ -57,29 +59,35 @@ class CreatePostNavItem extends React.Component {
   }
 
 
-  getImage() {
-    const { files } = this.state;
-    const storageRef = firebase.storage().ref();
-    return storageRef.child(`images/${files[0].name}`).getDownloadURL();
-    // storageRef.child(`images/${this.state.files[0].name}`).getDownloadURL().then((url) => {
-    //   console.log(url);
-    //   document.getElementById('new-img').src = url;
-    // });
+  // getImage() {
+  //   const { files } = this.state;
+  //   const storageRef = firebase.storage().ref();
+  //   return storageRef.child(`images/${files[0].name}`).getDownloadURL();
+  //   // storageRef.child(`images/${this.state.files[0].name}`).getDownloadURL().then((url) => {
+  //   //   console.log(url);
+  //   //   document.getElementById('new-img').src = url;
+  //   // });
+  // }
+
+  async handleSave() {
+    const bucketName = 'images';
+    const file = this.state.files[0];
+    const storageRef = await firebase.storage().ref(`${bucketName}/${file.name}`);
+    const uploadTask = await storageRef.put(file).then(async () => {
+      const storageRef2 = await firebase.storage().ref();
+      storageRef2.child(`images/${this.state.files[0].name}`).getDownloadURL().then((url) => {
+        console.log(url);
+        return url;
+      });
+    });
   }
 
-  handleSave() {
-    const bucketName = 'images';
-    const { files } = this.state;
-    const file = files[0];
-    console.log('file from handlesave:', file);
-    let downloadURL;
-    const storageRef = firebase.storage().ref(`${bucketName}/${file.name}`);
-    const uploadTask = storageRef.put(file);
-    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-      () => {
-        downloadURL = uploadTask.snapshot;
-      });
-    return true;
+  showImage() {
+    const storageRef = firebase.storage().ref();
+    const spaceRef = storageRef.child(`iamges/${this.state.files[0].name}`);
+    storageRef.child(`images/${this.state.files[0].name}`).getDownloadURL().then((url) => {
+      console.log(url);
+    });
   }
 
   handleChange(files) {
@@ -119,7 +127,6 @@ class CreatePostNavItem extends React.Component {
     const { reloadPostList } = this.props;
     const { files } = this.state;
     console.log('handlesubmit called');
-    console.log('files are', files);
     // the form name is createPost
 
 
@@ -144,35 +151,37 @@ class CreatePostNavItem extends React.Component {
         }
       }
     }`;
-    let url = '';
+    let imageUrl;
+    const bucketName = 'images';
+    const file = this.state.files[0];
+    const storageRef = await firebase.storage().ref(`${bucketName}/${file.name}`);
+    const uploadTask = await storageRef.put(file).then(() => {
+      const storageRef2 = firebase.storage().ref();
+      storageRef2.child(`images/${this.state.files[0].name}`).getDownloadURL().then(async (url) => {
+        const post = {
+          userId: 2,
+          source: url,
+          description: form.description.value,
+          visibility: 'Public',
+        };
 
-    // if (await this.handleSave()) {
-    //   console.log('after handlesave');
-    //   url = await this.getImage();
-    //   console.log(url);
-    // }
+        const data = await graphQLFetch(query, { post }, CreatePostNavItem.showError);
+        if (data) {
+          // const { history } = this.props;
+          // history.push(`/edit/${data.postCreate.id}`);
+          // const { preview } = this.state;
+          // URL.revokeObjectURL(preview);
+          reloadPostList();
+        }
+      });
+    });
+
     // const post = {
     //   userId: 2,
-    //   source: url,
+    //   source: this.handleSave(),
     //   description: form.description.value,
     //   visibility: 'Public',
     // };
-    const post = {
-      userId: 2,
-      source: form.source.value,
-      description: form.description.value,
-      visibility: 'Public',
-    };
-    const data = await graphQLFetch(query, { post }, this.showError);
-    if (data) {
-      // const { history } = this.props;
-      // history.push(`/edit/${data.postCreate.id}`);
-      // const { preview } = this.state;
-      // URL.revokeObjectURL(preview);
-      reloadPostList();
-      this.setState({ preview: null, files: null });
-      console.log('post submitted, files should be empty: files:', this.state.files);
-    }
   }
 
   render() {
