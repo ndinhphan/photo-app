@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import URLSearchParams from 'url-search-params';
-import Switch from "react-bootstrap/esm/Switch";
-import { Redirect } from "react-router-dom";
-import { Route } from 'react-router-dom';
+import Switch from 'react-bootstrap/esm/Switch';
+import { Redirect, Route } from 'react-router-dom';
+
 import { LinkContainer } from 'react-router-bootstrap';
 import {
   Card, Accordion, Button, Row, Col, Image,
@@ -11,7 +11,7 @@ import {
 import Post from './Post.jsx';
 import graphQLFetch from './graphQLFetch.js';
 
-export default class Profile extends React.Component {
+export default class Homepage extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -24,8 +24,11 @@ export default class Profile extends React.Component {
     this.loadData();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { reloadPostList, resetReloadPostList } = this.props;
+    const { posts } = this.state;
+    const { posts: prevPosts } = prevState;
+    if (posts.length !== prevPosts.length) this.loadData();
     if (prevProps.reloadPostList !== reloadPostList) {
       this.loadData();
       resetReloadPostList();
@@ -38,18 +41,18 @@ export default class Profile extends React.Component {
     await fetch('/api/service', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-          token: localStorage.getItem('AUTH_TOKEN')
-      })
+        token: localStorage.getItem('AUTH_TOKEN'),
+      }),
     })
-    .then(response => response.json())
-    .then(response => {
+      .then(response => response.json())
+      .then((response) => {
         console.log(response);
-        if (!response.authorized) window.location.href = '/login'
-        else userId = response.userId
-    });
+        if (!response.authorized) window.location.href = '/login';
+        else userId = response.userId;
+      });
 
     const query = `query {
       postList(visibility: Public) {
@@ -60,6 +63,7 @@ export default class Profile extends React.Component {
         createdAt
         userId
         author {
+          id
           source
           firstname
           lastname

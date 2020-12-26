@@ -16,6 +16,7 @@ type User{
   source: String!
   favorites: [Post!]
   posts:[Post!]
+  postlikes: [PostLike!]
   description: String
   createdAt: GraphQLDate!
 }
@@ -43,6 +44,7 @@ type Post{
   favorite: [String]
   author: User!
   comments: [Comment!]
+  postlikes: [PostLike!]
   visibility: VisibilityType!
   description: String
   createdAt: GraphQLDate!
@@ -81,8 +83,27 @@ input CommentUpdateInputs {
   content: String
 }
 
+type PostLike{
+  userId: Int!
+  postId: Int!
+  post: Post!
+}
 
+type Report{
+  id: Int!
+  userId: Int!
+  postId: Int!
+  content: String!
+  createdAt: GraphQLDate!
+  user: User!
+  post: Post!
+}
 
+input ReportInputs {
+  userId: Int!
+  postId: Int!
+  content: String!
+}
 ##### Top level declarations
 
 type Query{
@@ -96,10 +117,15 @@ type Query{
   comment(id: Int!): Comment!
   commentList(userid: Int, postid:Int): [Comment]!
 
+  postLikeList(userId:Int, postId:Int): [PostLike]!
+
+  report(id: Int!): Report!
+  reportList(userId: Int, postId: Int): [Report]!
 }
 
 type Mutation{
   setAboutMessage(message: String!): String
+
   userCreate(user: UserInputs): User!
   userUpdate(id: Int!, changes: UserUpdateInputs!): User!
   userDelete(id: Int!): Boolean!
@@ -111,4 +137,10 @@ type Mutation{
   commentCreate(comment: CommentInputs): Comment!
   commentUpdate(id: Int!, changes: CommentUpdateInputs!): Comment!
   commentDelete(id: Int!): Boolean!  
+
+  postLikeCreate(userId: Int!, postId: Int!): PostLike!
+  postLikeDelete(userId: Int!, postId: Int!): Boolean!  
+
+  reportCreate(report: ReportInputs): Report!
+  reportDelete(id: Int!): Boolean!
 }

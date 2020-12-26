@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   User.associate = (models) => {
     User.hasMany(models.Post, { foreignKey: { name: 'userId', allowNull: false }, as: 'posts', onDelete: 'CASCADE' });
+    User.hasMany(models.PostLike, { foreignKey: { name: 'userId', allowNull: false }, as: 'postLikes', onDelete: 'CASCADE' });
   };
   return User;
 };

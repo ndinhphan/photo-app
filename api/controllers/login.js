@@ -38,6 +38,7 @@ async function verifyUser(user, inputPassword, res) {
                 id: user.dataValues.id
             };
             const token = await jwtToken.generateToken(userData);
+
       return res.json({
         success: true,
         message: 'Login success!',

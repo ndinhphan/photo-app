@@ -17,10 +17,13 @@ export default class Profile extends React.Component {
       user: {},
       posts: [],
     };
+
+    this.loadData = this.loadData.bind(this);
   }
 
   componentDidMount() {
     this.loadData();
+
   }
 
   componentDidUpdate(prevProps, prevState) {
