@@ -47,7 +47,7 @@ async function verifyUser(user, inputPassword, res) {
     }
     return res.json({
       success: false,
-      message: `Incorrect Password, password is ${user.dataValues.password}, got ${inputPassword}`,
+      message: `Incorrect Password!`,
     });
   }
   return res.json({
