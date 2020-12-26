@@ -12,10 +12,10 @@ const port = process.env.API_SERVER_PORT || 3000;
 
 const app = express();
 installHandler(app);
-
+let connectedToDb = false;
 (async function start() {
   try {
-    await connectToDb();
+    if (!connectedToDb) connectedToDb = await connectToDb();
     app.listen(port, () => {
       console.log(`API Server started on port ${port}`);
     });
@@ -30,4 +30,4 @@ app.post('/api/login', loginController.login);
 app.post('/api/register', registerController.register);
 
 app.use(AuthMiddleWare.isAuth);
-app.post('/api/service', serviceController.service)
+app.post('/api/service', serviceController.service);

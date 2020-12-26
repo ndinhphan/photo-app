@@ -80,6 +80,9 @@ export default class Homepage extends React.Component {
             lastname
           }
         }
+        postlikes{
+          userId
+        }
       }
     }
     `;
@@ -90,6 +93,8 @@ export default class Homepage extends React.Component {
   }
 
   render() {
+    if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from="/home" to="/login" /></Switch>);
+
     const { posts } = this.state;
     let postCards;
     if (posts.length > 0) {
@@ -101,7 +106,7 @@ export default class Homepage extends React.Component {
       <>
         <Row>
           <Col xs={12} md={8}>
-            <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
+            {/* <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
               <Card.Header>
                 <Row>
                   <Col xs={-1}><Image responsive="true" src="https://via.placeholder.com/50" exact="true" to="/profile" roundedCircle /></Col>
@@ -117,7 +122,7 @@ export default class Homepage extends React.Component {
                 </Card.Text>
               </Card.Body>
             </Card>
-            <br />
+            <br /> */}
             {postCards}
           </Col>
           <Col xs={2} md={4}>

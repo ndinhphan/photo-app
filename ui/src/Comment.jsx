@@ -43,7 +43,8 @@ export default class Comment extends React.Component {
     }`;
     const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
-      PostloadData({ message: 'Comment deleted!' });
+      // PostloadData({ message: 'Comment deleted!' });
+      PostloadData('Comment deleted!');
     }
   }
 

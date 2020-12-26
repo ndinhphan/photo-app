@@ -146,14 +146,20 @@ class CreatePostNavItem extends React.Component {
     }`;
     let url = '';
 
-    if (await this.handleSave()) {
-      console.log('after handlesave');
-      url = await this.getImage();
-      console.log(url);
-    }
+    // if (await this.handleSave()) {
+    //   console.log('after handlesave');
+    //   url = await this.getImage();
+    //   console.log(url);
+    // }
+    // const post = {
+    //   userId: 2,
+    //   source: url,
+    //   description: form.description.value,
+    //   visibility: 'Public',
+    // };
     const post = {
       userId: 2,
-      source: url,
+      source: form.source.value,
       description: form.description.value,
       visibility: 'Public',
     };
@@ -161,8 +167,8 @@ class CreatePostNavItem extends React.Component {
     if (data) {
       // const { history } = this.props;
       // history.push(`/edit/${data.postCreate.id}`);
-      const { preview } = this.state;
-      URL.revokeObjectURL(preview);
+      // const { preview } = this.state;
+      // URL.revokeObjectURL(preview);
       reloadPostList();
       this.setState({ preview: null, files: null });
       console.log('post submitted, files should be empty: files:', this.state.files);

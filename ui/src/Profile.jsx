@@ -23,7 +23,6 @@ export default class Profile extends React.Component {
 
   componentDidMount() {
     this.loadData();
-
   }
 
   componentDidUpdate(prevProps, prevState) {

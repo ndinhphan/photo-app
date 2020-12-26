@@ -13,7 +13,7 @@ import {
 import { LinkContainer } from 'react-router-bootstrap';
 
 import {
-  AiOutlineGlobal, AiOutlineHeart, AiOutlineMore,
+  AiOutlineGlobal, AiOutlineHeart, AiOutlineMore, AiFillHeart,
 } from 'react-icons/ai';
 
 import Toast from './Toast.jsx';
@@ -54,6 +54,7 @@ export default class Post extends React.Component {
       toastMessage: '',
       toastType: 'success',
       toastVisible: false,
+      liked: false,
     };
     this.handleClickDelete = this.handleClickDelete.bind(this);
     this.loadData = this.loadData.bind(this);
@@ -67,12 +68,15 @@ export default class Post extends React.Component {
     this.showSuccess = this.showSuccess.bind(this);
     this.showError = this.showError.bind(this);
     this.dismissToast = this.dismissToast.bind(this);
+
+    this.handleOnClickLike = this.handleOnClickLike.bind(this);
+    this.handleOnClickUnlike = this.handleOnClickUnlike.bind(this);
   }
 
-  // async componentDidMount() {
-  //   // console.log('component did mount called');
-  //   this.loadData();
-  // }
+  async componentDidMount() {
+    // console.log('component did mount called');
+    this.loadData();
+  }
 
   // componentDidUpdate(prevProps) {
   //   console.log('component post updated');
@@ -84,7 +88,7 @@ export default class Post extends React.Component {
   //   }
   // }
 
-  async loadData({ message }) {
+  async loadData(message) {
     // console.log('loadData called');
     const { post: currentPost } = this.props;
     const query = `query post($id: Int!){
@@ -113,6 +117,9 @@ export default class Post extends React.Component {
             lastname
           }
         }
+        postlikes{
+          userId
+        }
       }
     }
     `;
@@ -120,8 +127,16 @@ export default class Post extends React.Component {
     const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
       // console.log('data fetched from loaddata');
-      this.showSuccess(message);
+      if (message) {
+        this.setState({ toastVisible: false });
+        this.showSuccess(message);
+      }
       this.setState({ post: data.post });
+      if (data.post.postlikes.some(e => e.userId === 1)) {
+        this.setState({ liked: true });
+      } else this.setState({ liked: false });
+      // change this later
+      // console.log(data);
     }
   }
 
@@ -281,6 +296,54 @@ export default class Post extends React.Component {
     }
   }
 
+  async handleOnClickLike() {
+    let post;
+    const { post: postState } = this.state;
+    if (Object.keys(postState).length === 0 && postState.constructor === Object) {
+      post = this.props.post;
+    } else {
+      post = postState;
+    }
+    // Change later
+    const vars = { userId: 1, postId: post.id };
+    const query = `mutation postLikeCreate($userId: Int!, $postId: Int!){
+      postLikeCreate(userId: $userId, postId: $postId){
+        userId postId
+      }
+    }`;
+    const data = await graphQLFetch(query, vars, this.showError);
+    if (data) {
+      // console.log(data.commentCreate);
+      this.setState({ liked: true });
+      // console.log('liked, state is ', this.state.liked);
+      this.showSuccess('Post liked!');
+      // document.forms.commentCreate.content.value = '';
+    }
+  }
+
+  async handleOnClickUnlike() {
+    let post;
+    const { post: postState } = this.state;
+    if (Object.keys(postState).length === 0 && postState.constructor === Object) {
+      post = this.props.post;
+    } else {
+      post = postState;
+    }
+    // Change later
+    const vars = { userId: 1, postId: post.id };
+    const query = `mutation postLikeDelete($userId: Int!, $postId: Int!){
+      postLikeDelete(userId: $userId, postId: $postId)
+    }`;
+    const data = await graphQLFetch(query, vars, this.showError);
+    if (data) {
+      // console.log(data.commentCreate);
+      this.setState({ liked: false });
+      // console.log('unliked, state is ', this.state.liked);
+      this.showSuccess('Post unliked!');
+      // document.forms.commentCreate.content.value = '';
+    }
+  }
+
   render() {
     const {
       toastMessage, toastType, toastVisible,
@@ -354,13 +417,24 @@ export default class Post extends React.Component {
         </Card.Footer>
       );
     }
+    let postNavBar;
+    const { liked } = this.state;
+    if (!liked) {
+      postNavBar = (
+        <Nav className="ml-auto">
+          <h3><AiOutlineHeart onClick={this.handleOnClickLike} /></h3>
+          <h3><AiOutlineGlobal /></h3>
+        </Nav>
+      );
+    } else {
+      postNavBar = (
+        <Nav className="ml-auto">
+          <h3><AiFillHeart onClick={this.handleOnClickUnlike} /></h3>
+          <h3><AiOutlineGlobal /></h3>
+        </Nav>
+      );
+    }
 
-    const postNavBar = (
-      <Nav className="ml-auto">
-        <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer>
-        <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineGlobal /></h3></Nav.Link></LinkContainer>
-      </Nav>
-    );
     // console.log(post.author);
     // console.log(description);
     const usernameLink = (

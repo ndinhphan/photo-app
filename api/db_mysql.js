@@ -51,6 +51,7 @@ async function connectToDb() {
   db.sequelize = sequelize;
 
   console.log('connected to Mysql');
+  return true;
 }
 
 function getDb() {
