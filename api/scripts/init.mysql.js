@@ -8,6 +8,7 @@ const userModel = require('../models/user');
 const postModel = require('../models/post');
 const commentModel = require('../models/comment');
 const postLikeModel = require('../models/postLike');
+const reportModel = require('../models/report');
 
 const db = {};
 (async function init() {
@@ -27,6 +28,7 @@ const db = {};
   db.Post = await postModel(sequelize, Sequelize);
   db.Comment = await commentModel(sequelize, Sequelize);
   db.PostLike = await postLikeModel(sequelize, Sequelize);
+  db.Report = await reportModel(sequelize, Sequelize);
 
   await sequelize.authenticate();
   await sequelize.drop();
@@ -43,6 +45,9 @@ const db = {};
   }
   if (db.PostLike.associate) {
     db.PostLike.associate(db);
+  }
+  if (db.Report.associate) {
+    db.Report.associate(db);
   }
   await sequelize.sync();
 
