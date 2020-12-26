@@ -3,7 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Profile from './Profile.jsx';
 import Homepage from './Homepage.jsx';
 import Register from './Register.jsx';
-import Login from './Login.jsx';
+import Login from './Login.js';
 
 export default class Contents extends React.Component {
   constructor() {
