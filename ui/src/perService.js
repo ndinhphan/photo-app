@@ -1,4 +1,5 @@
-async function authAndGetID() {
+async function authorize() {
+  console.log('checking');
   let res = null;
   await fetch('/api/service', {
     method: 'POST',
@@ -13,7 +14,12 @@ async function authAndGetID() {
     .then((response) => {
       // console.log(response);
       if (!response.authorized) {
+        console.log('fail');
         window.location.href = '/login';
+        return;
+      } else if (window.location.pathname == '/login' || window.location.pathname == '/register') {
+        console.log('pass');
+        window.location.href = '/home';
         return;
       }
       res = response;
@@ -21,4 +27,4 @@ async function authAndGetID() {
   return res.userId;
 }
 
-module.exports = { authAndGetID };
+module.exports = { authorize };

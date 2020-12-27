@@ -1,7 +1,8 @@
 import React from 'react';
 import {
   Form, FormControl, FormGroup, FormLabel, Button, Modal,
-  NavItem, ButtonToolbar, OverlayTrigger, Tooltip,
+  NavItem, ButtonToolbar, OverlayTrigger, Tooltip, Image,
+  Row, Col,
 } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
@@ -189,8 +190,11 @@ class CreatePostNavItem extends React.Component {
                 <input type="file" onChange={(e) => { this.handleChange(e.target.files); }} />
                 {/* <Button onClick={this.handleSave}>Save</Button>
                 <Button onClick={this.showImage}>Show Image</Button> */}
-                <img id="new-img" />
-                <img src={preview} />
+                <Row>
+                  <Col xs={12}>
+                    <Image fluid src={preview} />
+                  </Col>
+                </Row>
               </div>
               <FormGroup>
                 <FormLabel>Description</FormLabel>

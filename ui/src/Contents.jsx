@@ -6,6 +6,7 @@ import Register from './Register.jsx';
 import Login from './Login.jsx';
 import Settings from './Settings.jsx';
 import PostPage from './PostPage.jsx';
+const service = require('./perService');
 
 export default class Contents extends React.Component {
   constructor() {
@@ -13,7 +14,15 @@ export default class Contents extends React.Component {
     this.state = {};
   }
 
+  async authorize() {
+    if (localStorage.getItem('AUTH_TOKEN')) {
+      console.log('has token');
+      await service.authorize();
+    }
+  }
   render() {
+    this.authorize();
+
     const { reloadPostList, resetReloadPostList } = this.props;
     return (
       <Switch>
