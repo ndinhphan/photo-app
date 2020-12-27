@@ -70,6 +70,7 @@ export default class Page extends React.Component {
 }
 
 function NavBar(props) {
+  const userId = parseInt(localStorage.getItem('USER_ID'), 10);
   const profileDropdown = (
     <h4><AiOutlineUser /></h4>
   );
@@ -92,14 +93,12 @@ function NavBar(props) {
               <CreatePostNavItem reloadPostList={reloadPostList} />
             </NavItem>
             <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHome /></h3></Nav.Link></LinkContainer>
-            <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer>
+            <LinkContainer exact to="/favorites"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer>
             <NavDropdown title={profileDropdown}>
-              <LinkContainer exact to="/profile/1"><NavDropdown.Item href="#action/3.1">UserProfile</NavDropdown.Item></LinkContainer>
-              <LinkContainer exact to="/image"><NavDropdown.Item href="#action/3.1">Image</NavDropdown.Item></LinkContainer>
-              <NavDropdown.Item href="#action/3.3">Placeholder</NavDropdown.Item>
+              <LinkContainer exact to={`/profile/${userId}`}><NavDropdown.Item>UserProfile</NavDropdown.Item></LinkContainer>
+              <LinkContainer exact to="/settings"><NavDropdown.Item>Settings</NavDropdown.Item></LinkContainer>
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={() => { localStorage.removeItem('AUTH_TOKEN'); }} href="/login">Log out</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.4">Placeholder</NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

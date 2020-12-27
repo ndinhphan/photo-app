@@ -38,54 +38,6 @@ export default class Homepage extends React.Component {
 
   async loadData() {
     const userId = parseInt(localStorage.getItem('USER_ID'), 10);
-    // await fetch('/api/service', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     token: localStorage.getItem('AUTH_TOKEN'),
-    //   }),
-    // })
-    //   .then(response => response.json())
-    //   .then((response) => {
-    //     console.log(response);
-    //     if (!response.authorized) window.location.href = '/login';
-    //     else userId = response.userId;
-    //   });
-
-    // const query = `query {
-    //   postList(visibility: Public) {
-    //     id
-    //     source
-    //     description
-    //     visibility
-    //     createdAt
-    //     userId
-    //     author {
-    //       id
-    //       source
-    //       firstname
-    //       lastname
-    //       username
-    //     }
-    //     comments {
-    //       id
-    //       content
-    //       createdAt
-    //       author {
-    //         source
-    //         username
-    //         firstname
-    //         lastname
-    //       }
-    //     }
-    //     postlikes{
-    //       userId
-    //     }
-    //   }
-    // }
-    // `;
     const query = `query{
       postList(visibility: Public) {
         id
@@ -155,8 +107,8 @@ export default class Homepage extends React.Component {
         <Card border="secondary" style={{ width: 'auto', height: 'auto', border: 'secondary' }}>
           <Card.Body>
             <Row>
-              <Col xs={-1}><Image fluid="true" responsive="true" src={user.source} roundedCircle /></Col>
-              <Col xs={0}>
+              <Col xs={4}><Image fluid="true" responsive="true" src={user.source} roundedCircle /></Col>
+              <Col xs={8}>
                 {' '}
                 <LinkContainer to={`/profile/${user.id}`}><a><h6 id="username">{`${user.username}`}</h6></a></LinkContainer>
                 <h6>{`${user.firstname} ${user.lastname}`}</h6>

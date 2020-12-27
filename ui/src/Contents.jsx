@@ -4,6 +4,7 @@ import Profile from './Profile.jsx';
 import Homepage from './Homepage.jsx';
 import Register from './Register.jsx';
 import Login from './Login.jsx';
+import Settings from './Settings.jsx';
 
 export default class Contents extends React.Component {
   constructor() {
@@ -20,6 +21,8 @@ export default class Contents extends React.Component {
         <Route path="/profile/:userId" render={props => <Profile {...props} reloadPostList={reloadPostList} resetReloadPostList={resetReloadPostList} />} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
+        <Route path="/settings" component={Settings} />
+
         {/* <Route path="/users/:userid" component={Profile} /> */}
       </Switch>
     );

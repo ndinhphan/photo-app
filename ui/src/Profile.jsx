@@ -73,19 +73,40 @@ export default class Profile extends React.Component {
         <Post post={post} key={post.id} onProfile />
       ));
     }
+    let userHeader;
+    if (user) {
+      userHeader = (
+        <Card style={{ width: 'auto', height: 'auto', border: 0 }}>
+          <Card.Body>
+            <Row>
+              <Col xs={2}><Card.Img responsive="true" variant="top" fluid="true" src={user.source} roundedCircle /></Col>
+              <Col xs={6}>
+                {' '}
+                <LinkContainer to={`/profile/${user.id}`}><a><h6 id="username">{`${user.username}`}</h6></a></LinkContainer>
+                <h6>{`${user.firstname} ${user.lastname}`}</h6>
+                <h6>{`${user.description === null ? '' : user.description}`}</h6>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+      );
+    }
     return (
       <>
         <div>
-          <h3>{`placeholder for ${user.username}'s profile`}</h3>
-          <h5>{JSON.stringify(user)}</h5>
+          {userHeader}
         </div>
+        <hr />
+        <br />
         <>
-          <CardDeck>
-            {postCards}
-          </CardDeck>
+          <Row>
+            <br />
+            <Col xs={9} md={6}>
+              {postCards}
+            </Col>
+            <br />
+          </Row>
         </>
-
-
       </>
 
     );

@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Row, Col, Dropdown, Form, Button, ButtonToolbar,
 } from 'react-bootstrap';
-
+import { LinkContainer } from 'react-router-bootstrap';
 import { AiOutlineMore } from 'react-icons/ai';
 import graphQLFetch from './graphQLFetch.js';
 import Toast from './Toast.jsx';
@@ -162,11 +162,13 @@ export default class Comment extends React.Component {
         <>
           <Row>
             <Col xs={10} md={11} className="align-comment">
-              <h6>
-                {`${comment.author.username}:`}
-                {' '}
-                {commentContent}
-              </h6>
+              <div>
+                <h6>
+                  <LinkContainer to={`/profile/${comment.author.id}`}><a>{`${comment.author.username}`}</a></LinkContainer>
+                  {' '}
+                  {commentContent}
+                </h6>
+              </div>
             </Col>
             <Col xs={2} md={1}>
               <Dropdown>
@@ -177,7 +179,7 @@ export default class Comment extends React.Component {
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
                   <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
+                  <Dropdown.Item>Report</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
@@ -190,11 +192,13 @@ export default class Comment extends React.Component {
         <>
           <Row>
             <Col xs={10} md={11} className="align-comment">
-              <h6>
-                {`${comment.author.username}:`}
-                {' '}
-                {commentContent}
-              </h6>
+              <div>
+                <h6>
+                  <LinkContainer to={`/profile/${comment.author.id}`}><a>{`${comment.author.username}`}</a></LinkContainer>
+                  {' '}
+                  {commentContent}
+                </h6>
+              </div>
             </Col>
             <Col xs={2} md={1}>
               <Dropdown>

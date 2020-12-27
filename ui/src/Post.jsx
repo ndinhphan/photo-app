@@ -429,15 +429,15 @@ export default class Post extends React.Component {
     if (!liked) {
       postNavBar = (
         <Nav className="ml-auto">
-          <h3><AiOutlineHeart onClick={this.handleOnClickLike} /></h3>
-          <h3><AiOutlineGlobal /></h3>
+          <Button><h3><AiOutlineHeart onClick={this.handleOnClickLike} /></h3></Button>
+          <Button><h3><AiOutlineGlobal /></h3></Button>
         </Nav>
       );
     } else {
       postNavBar = (
         <Nav className="ml-auto">
-          <h3><AiFillHeart onClick={this.handleOnClickUnlike} /></h3>
-          <h3><AiOutlineGlobal /></h3>
+          <Button onClick={this.handleOnClickUnlike}><h3><AiFillHeart /></h3></Button>
+          <Button><h3><AiOutlineGlobal /></h3></Button>
         </Nav>
       );
     }
@@ -465,8 +465,8 @@ export default class Post extends React.Component {
         <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
           <Card.Header className="PostHeader">
             <Row>
-              <Col xs={-1}><Image fluid="true" responsive="true" src={post.author.source} roundedCircle /></Col>
-              <Col xs={0}>
+              <Col xs={2}><Image fluid="true" responsive="true" src={post.author.source} roundedCircle /></Col>
+              <Col xs={10}>
                 <Row>
                   <Col>
                     {usernameLink}

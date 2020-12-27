@@ -30,6 +30,7 @@ input UserInputs{
 }
 
 input UserUpdateInputs{
+  username: String
   firstname: String
   lastname: String
   email: String
