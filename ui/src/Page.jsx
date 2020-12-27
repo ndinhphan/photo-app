@@ -76,16 +76,16 @@ function NavBar(props) {
   );
   const { reloadPostList } = props;
   let AdditionalNavBarItems;
-  if (localStorage.getItem('AUTH_TOKEN')) {
+  if (window.location.pathname != '/login' && window.location.pathname != '/register') {
     AdditionalNavBarItems = (
       <>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Nav>
+        {/* <Nav>
           <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
             <Button variant="outline-success">Search</Button>
           </Form>
-        </Nav>
+        </Nav> */}
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
@@ -93,7 +93,7 @@ function NavBar(props) {
               <CreatePostNavItem reloadPostList={reloadPostList} />
             </NavItem>
             <LinkContainer exact to="/"><Nav.Link><h3><AiOutlineHome /></h3></Nav.Link></LinkContainer>
-            <LinkContainer exact to="/favorites"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer>
+            {/* <LinkContainer exact to="/favorites"><Nav.Link><h3><AiOutlineHeart /></h3></Nav.Link></LinkContainer> */}
             <NavDropdown title={profileDropdown}>
               <LinkContainer exact to={`/profile/${userId}`}><NavDropdown.Item>UserProfile</NavDropdown.Item></LinkContainer>
               <LinkContainer exact to="/settings"><NavDropdown.Item>Settings</NavDropdown.Item></LinkContainer>

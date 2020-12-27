@@ -45,7 +45,7 @@ class Login extends Component {
           this.setState({ message: response.message });
           localStorage.setItem('AUTH_TOKEN', response.token);
           localStorage.setItem('USER_ID', response.userData.id);
-          console.log(localStorage.getItem('AUTH_TOKEN'));
+          // console.log(localStorage.getItem('AUTH_TOKEN'));
           window.location.href = '/home';
         }
       });
@@ -100,9 +100,6 @@ class Login extends Component {
                 </div> */}
         {message}
         <button type="submit" className="btn btn-dark btn-lg btn-block">Sign in</button>
-        <p className="forgot-password text-right">
-          <a href="#">Forgot password?</a>
-        </p>
         <hr />
         <div className="text-center">
           Don't have an account?
