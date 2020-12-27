@@ -16,6 +16,7 @@ export default class Homepage extends React.Component {
     super();
     this.state = {
       posts: [],
+      user: {},
     };
     this.loadData = this.loadData.bind(this);
   }
@@ -53,7 +54,39 @@ export default class Homepage extends React.Component {
     //     else userId = response.userId;
     //   });
 
-    const query = `query {
+    // const query = `query {
+    //   postList(visibility: Public) {
+    //     id
+    //     source
+    //     description
+    //     visibility
+    //     createdAt
+    //     userId
+    //     author {
+    //       id
+    //       source
+    //       firstname
+    //       lastname
+    //       username
+    //     }
+    //     comments {
+    //       id
+    //       content
+    //       createdAt
+    //       author {
+    //         source
+    //         username
+    //         firstname
+    //         lastname
+    //       }
+    //     }
+    //     postlikes{
+    //       userId
+    //     }
+    //   }
+    // }
+    // `;
+    const query = `query{
       postList(visibility: Public) {
         id
         source
@@ -83,57 +116,67 @@ export default class Homepage extends React.Component {
           userId
         }
       }
-    }
-    `;
+    }`;
+    const queryUser = `query user($id: Int!) {
+      user(id: $id) {
+        firstname
+        username
+        lastname
+        source
+        description
+        createdAt
+        id
+      }
+    }`;
+    const vars = { id: userId };
     const data = await graphQLFetch(query);
     if (data) {
       this.setState({ posts: data.postList });
+    }
+    const userdata = await graphQLFetch(queryUser, vars);
+    if (data) {
+      this.setState({ user: userdata.user });
     }
   }
 
   render() {
     if (!localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect from="/home" to="/login" /></Switch>);
 
-    const { posts } = this.state;
+    const { posts, user } = this.state;
     let postCards;
     if (posts.length > 0) {
       postCards = posts.map(post => (
         <Post post={post} key={post.id} HomepageloadData={this.loadData} />
       ));
     }
+    let userCard = '';
+    if (user.username && user.source) {
+      userCard = (
+        <Card border="secondary" style={{ width: 'auto', height: 'auto', border: 'secondary' }}>
+          <Card.Body>
+            <Row>
+              <Col xs={-1}><Image fluid="true" responsive="true" src={user.source} roundedCircle /></Col>
+              <Col xs={0}>
+                {' '}
+                <LinkContainer to={`/profile/${user.id}`}><a><h6 id="username">{`${user.username}`}</h6></a></LinkContainer>
+                <h6>{`${user.firstname} ${user.lastname}`}</h6>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+      );
+    }
+
+    // console.log(user);
     return (
       <>
         <Row>
           <Col xs={12} md={8}>
-            {/* <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-              <Card.Header>
-                <Row>
-                  <Col xs={-1}><Image responsive="true" src="https://via.placeholder.com/50" exact="true" to="/profile" roundedCircle /></Col>
-                  <Col xs={0}><h6>user</h6></Col>
-                  <Col xs={6} />
-                </Row>
-              </Card.Header>
-              <Card.Img responsive="true" variant="top" src="https://via.placeholder.com/650" />
-              <Card.Body>
-                <Card.Title>Card Title</Card.Title>
-                <Card.Text>
-                  This post is static and is not created from database
-                </Card.Text>
-              </Card.Body>
-            </Card>
-            <br /> */}
             {postCards}
           </Col>
           <Col xs={2} md={4}>
             <div className="userBar">
-              <Card border="secondary" style={{ width: 'auto', height: 'auto', border: 0 }}>
-                <Card.Body>
-                  <Row>
-                    <Col xs={-1}><Image responsive="true" src="https://via.placeholder.com/50" exact="true" to="/profile" roundedCircle /></Col>
-                    <Col xs={0}><h6>user</h6></Col>
-                  </Row>
-                </Card.Body>
-              </Card>
+              { userCard }
             </div>
           </Col>
         </Row>

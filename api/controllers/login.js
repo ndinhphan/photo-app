@@ -34,6 +34,7 @@ const login = (req, res) => {
 async function verifyUser(user, inputPassword, res) {
   if (user) {
     if (bcrypt.compareSync(inputPassword, user.dataValues.password)) {
+      console.log(user.dataValues);
       const userData = {
         id: user.dataValues.id,
       };
