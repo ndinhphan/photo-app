@@ -44,6 +44,7 @@ class Login extends Component {
         else {
           this.setState({ message: response.message });
           localStorage.setItem('AUTH_TOKEN', response.token);
+          localStorage.setItem('USER_ID', response.userData.id);
           console.log(localStorage.getItem('AUTH_TOKEN'));
           window.location.href = '/home';
         }

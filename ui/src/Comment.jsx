@@ -6,7 +6,6 @@ import {
 import { AiOutlineMore } from 'react-icons/ai';
 import graphQLFetch from './graphQLFetch.js';
 import Toast from './Toast.jsx';
-import authAndGetID from './perService';
 
 export default class Comment extends React.Component {
   constructor() {
@@ -83,8 +82,6 @@ export default class Comment extends React.Component {
 
 
   async handleSubmitEdit() {
-    const userId = authAndGetID;
-    
     // console.log('handleSubmitEdit called');
     const { comment } = this.props;
     const { commentEdit } = this.state;
@@ -100,6 +97,7 @@ export default class Comment extends React.Component {
           firstname
           username
           lastname
+          id
         }
         post {
           source
@@ -128,6 +126,7 @@ export default class Comment extends React.Component {
       toastMessage, toastType, toastVisible,
     } = this.state;
     let comment;
+    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const { comment: commentState, edit } = this.state;
     if (Object.keys(commentState).length === 0 && commentState.constructor === Object) {
       comment = this.props.comment;
@@ -157,34 +156,61 @@ export default class Comment extends React.Component {
         </Row>
       );
     }
+    let defaultContent;
+    if (userId === comment.author.id) {
+      defaultContent = (
+        <>
+          <Row>
+            <Col xs={10} md={11} className="align-comment">
+              <h6>
+                {`${comment.author.username}:`}
+                {' '}
+                {commentContent}
+              </h6>
+            </Col>
+            <Col xs={2} md={1}>
+              <Dropdown>
+                <Dropdown.Toggle id="dropdown-basic">
+                  <AiOutlineMore />
+                </Dropdown.Toggle>
 
-    const defaultContent = (
-      <>
-        <Row>
-          <Col xs={10} md={11} className="align-comment">
-            <h6>
-              {`${comment.author.username}:`}
-              {' '}
-              {commentContent}
-            </h6>
-          </Col>
-          <Col xs={2} md={1}>
-            <Dropdown>
-              <Dropdown.Toggle id="dropdown-basic">
-                <AiOutlineMore />
-              </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
+                  <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+          </Row>
+        </>
 
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
-                <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Col>
-        </Row>
-      </>
+      );
+    } else {
+      defaultContent = (
+        <>
+          <Row>
+            <Col xs={10} md={11} className="align-comment">
+              <h6>
+                {`${comment.author.username}:`}
+                {' '}
+                {commentContent}
+              </h6>
+            </Col>
+            <Col xs={2} md={1}>
+              <Dropdown>
+                <Dropdown.Toggle id="dropdown-basic">
+                  <AiOutlineMore />
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+          </Row>
+        </>
+      );
+    }
 
-    );
 
     return (
       <div>

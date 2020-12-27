@@ -32,22 +32,23 @@ const login = (req, res) => {
 };
 
 async function verifyUser(user, inputPassword, res) {
-    if (user) {
-        if(bcrypt.compareSync(inputPassword, user.dataValues.password)) {
-            const userData = {
-                id: user.dataValues.id
-            };
-            const token = await jwtToken.generateToken(userData);
+  if (user) {
+    if (bcrypt.compareSync(inputPassword, user.dataValues.password)) {
+      const userData = {
+        id: user.dataValues.id,
+      };
+      const token = await jwtToken.generateToken(userData);
 
       return res.json({
         success: true,
         message: 'Login success!',
         token,
+        userData,
       });
     }
     return res.json({
       success: false,
-      message: `Incorrect Password!`,
+      message: 'Incorrect Password!',
     });
   }
   return res.json({

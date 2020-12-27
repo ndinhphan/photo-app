@@ -91,6 +91,7 @@ export default class Post extends React.Component {
   async loadData(message) {
     // console.log('loadData called');
     const { post: currentPost } = this.props;
+    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const query = `query post($id: Int!){
       post(id: $id) {
         id
@@ -115,6 +116,7 @@ export default class Post extends React.Component {
             username
             firstname
             lastname
+            id
           }
         }
         postlikes{
@@ -132,7 +134,7 @@ export default class Post extends React.Component {
         this.showSuccess(message);
       }
       this.setState({ post: data.post });
-      if (data.post.postlikes.some(e => e.userId === 1)) {
+      if (data.post.postlikes.some(e => e.userId === userId)) {
         this.setState({ liked: true });
       } else this.setState({ liked: false });
       // change this later
@@ -244,6 +246,7 @@ export default class Post extends React.Component {
   async handleSubmitComment() {
     // console.log('handleSubmitComment called');
     let post;
+    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const { post: postState, comment } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
@@ -251,7 +254,7 @@ export default class Post extends React.Component {
       post = postState;
     }
     // TODO: UserId, handleError
-    const vars = { userId: 1, postId: post.id, content: comment };
+    const vars = { userId, postId: post.id, content: comment };
     // console.log(comment);
     // console.log(vars);
     const query = `mutation commentCreate($userId: Int!, $postId: Int!, $content: String!) {
@@ -298,6 +301,8 @@ export default class Post extends React.Component {
 
   async handleOnClickLike() {
     let post;
+    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
+
     const { post: postState } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
@@ -305,7 +310,7 @@ export default class Post extends React.Component {
       post = postState;
     }
     // Change later
-    const vars = { userId: 1, postId: post.id };
+    const vars = { userId, postId: post.id };
     const query = `mutation postLikeCreate($userId: Int!, $postId: Int!){
       postLikeCreate(userId: $userId, postId: $postId){
         userId postId
@@ -323,6 +328,7 @@ export default class Post extends React.Component {
 
   async handleOnClickUnlike() {
     let post;
+    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const { post: postState } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
@@ -330,7 +336,7 @@ export default class Post extends React.Component {
       post = postState;
     }
     // Change later
-    const vars = { userId: 1, postId: post.id };
+    const vars = { userId, postId: post.id };
     const query = `mutation postLikeDelete($userId: Int!, $postId: Int!){
       postLikeDelete(userId: $userId, postId: $postId)
     }`;
@@ -345,6 +351,7 @@ export default class Post extends React.Component {
   }
 
   render() {
+    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const {
       toastMessage, toastType, toastVisible,
     } = this.state;
@@ -437,9 +444,22 @@ export default class Post extends React.Component {
 
     // console.log(post.author);
     // console.log(description);
+    let PostEditAndDeleteButton;
+    // console.log("userId:", userId);
+    // console.log("post userID:", post.author.id);
+    if (userId === post.author.id) {
+      PostEditAndDeleteButton = (
+        <div>
+          <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
+          <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
+        </div>
+      );
+    }
+
     const usernameLink = (
       <LinkContainer to={`/profile/${post.author.id}`}><a><h6 id="username">{`${post.author.username}`}</h6></a></LinkContainer>
     );
+
     return (
       <>
         <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
@@ -459,8 +479,7 @@ export default class Post extends React.Component {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu>
-                        <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
+                        {PostEditAndDeleteButton}
                         <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>

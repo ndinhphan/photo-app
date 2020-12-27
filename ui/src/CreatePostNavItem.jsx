@@ -9,7 +9,6 @@ import firebase from 'firebase';
 import Toast from './Toast.jsx';
 import graphQLFetch from './graphQLFetch.js';
 
-
 // import firebase from 'firebase';
 
 const firebaseConfig = {
@@ -122,10 +121,11 @@ class CreatePostNavItem extends React.Component {
   // component functions
   async handleSubmit(e) { /* e is the submit event */
     e.preventDefault();
+    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     this.hideModal();
     const { reloadPostList } = this.props;
     console.log('handlesubmit called');
-    // the form name is createPost
+    // the form name is createPosts
 
 
     const form = document.forms.createPost;
@@ -157,7 +157,7 @@ class CreatePostNavItem extends React.Component {
       const storageRef2 = firebase.storage().ref();
       storageRef2.child(`images/${file.name}`).getDownloadURL().then(async (url) => {
         const post = {
-          userId: 2,
+          userId,
           source: url,
           description: form.description.value,
           visibility: 'Public',

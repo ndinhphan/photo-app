@@ -10,7 +10,6 @@ import {
 } from 'react-bootstrap';
 import Post from './Post.jsx';
 import graphQLFetch from './graphQLFetch.js';
-import authAndGetID from './perService';
 
 export default class Homepage extends React.Component {
   constructor() {
@@ -37,8 +36,7 @@ export default class Homepage extends React.Component {
   }
 
   async loadData() {
-    const userId = authAndGetID;
-
+    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     // await fetch('/api/service', {
     //   method: 'POST',
     //   headers: {
