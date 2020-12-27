@@ -4,6 +4,7 @@ import Profile from './Profile.jsx';
 import Homepage from './Homepage.jsx';
 import Register from './Register.jsx';
 import Login from './Login.jsx';
+const service = require('./perService');
 
 export default class Contents extends React.Component {
   constructor() {
@@ -12,6 +13,8 @@ export default class Contents extends React.Component {
   }
 
   render() {
+    if (window.location.pathname != '/login' && window.location.pathname != '/register' ) service.authorization;
+
     const { reloadPostList, resetReloadPostList } = this.props;
     return (
       <Switch>

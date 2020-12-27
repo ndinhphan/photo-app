@@ -1,5 +1,5 @@
-async function authAndGetID() {
-  let userID;
+async function authorization() {
+  // let userID;
   await fetch('/api/service', {
       method: 'POST',
       headers: {
@@ -12,10 +12,13 @@ async function authAndGetID() {
     .then(response => response.json())
     .then((response) => {
       console.log(response);
-      if (response.authorized) userID = response.userId;
-      else window.location.href = '/login';
+      if (!response.authorized) {
+        localStorage.removeItem('AUTH_TOKEN');
+        localStorage.removeItem('USER_ID');
+        window.location.href = '/login';
+      }
     });
-  return userID;
+  // return userID;
 }
 
-module.exports = { authAndGetID }
+module.exports = { authorization }

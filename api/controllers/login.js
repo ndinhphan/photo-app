@@ -45,6 +45,7 @@ async function verifyUser(user, inputPassword, res) {
         success: true,
         message: 'Login success!',
         token,
+        id: user.dataValues.id
       });
     }
     return res.json({

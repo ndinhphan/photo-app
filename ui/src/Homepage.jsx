@@ -11,7 +11,6 @@ import {
 import Post from './Post.jsx';
 import graphQLFetch from './graphQLFetch.js';
 // import authAndGetID from './perService';
-const service = require('./perService');
 
 export default class Homepage extends React.Component {
   constructor() {
@@ -38,9 +37,6 @@ export default class Homepage extends React.Component {
   }
 
   async loadData() {
-    const userId = await service.authAndGetID();
-    console.log(userId);
-
     const query = `query {
       postList(visibility: Public) {
         id

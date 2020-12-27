@@ -44,7 +44,8 @@ class Login extends Component {
         else {
           this.setState({ message: response.message });
           localStorage.setItem('AUTH_TOKEN', response.token);
-          console.log(localStorage.getItem('AUTH_TOKEN'));
+          localStorage.setItem('USER_ID', response.id);
+          console.log(response);
           window.location.href = '/home';
         }
       });
@@ -52,6 +53,8 @@ class Login extends Component {
 
 
   render() {
+    if (localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect to="/home" /></Switch>);
+
     let message;
     if (this.state.message) {
       message = (

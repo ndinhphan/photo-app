@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Button from 'react-bootstrap/Button';
+import Switch from 'react-bootstrap/esm/Switch';
+import { Redirect } from 'react-router-dom';
 import bcrypt from 'bcryptjs';
 
 export default class Register extends Component {
@@ -74,6 +76,8 @@ export default class Register extends Component {
         });
     }
     render() {        
+        if (localStorage.getItem('AUTH_TOKEN')) return (<Switch><Redirect to="/home" /></Switch>);
+
         if (this.state.success) {
             return <Button size="lg" variant="success" href='/login' block> Register success! Click here to Log in.</Button>
         }
