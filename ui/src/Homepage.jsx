@@ -10,6 +10,7 @@ import {
 } from 'react-bootstrap';
 import Post from './Post.jsx';
 import graphQLFetch from './graphQLFetch.js';
+import authAndGetID from './perService';
 
 export default class Homepage extends React.Component {
   constructor() {
@@ -36,23 +37,23 @@ export default class Homepage extends React.Component {
   }
 
   async loadData() {
-    let userId;
+    const userId = authAndGetID;
 
-    await fetch('/api/service', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: localStorage.getItem('AUTH_TOKEN'),
-      }),
-    })
-      .then(response => response.json())
-      .then((response) => {
-        console.log(response);
-        if (!response.authorized) window.location.href = '/login';
-        else userId = response.userId;
-      });
+    // await fetch('/api/service', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     token: localStorage.getItem('AUTH_TOKEN'),
+    //   }),
+    // })
+    //   .then(response => response.json())
+    //   .then((response) => {
+    //     console.log(response);
+    //     if (!response.authorized) window.location.href = '/login';
+    //     else userId = response.userId;
+    //   });
 
     const query = `query {
       postList(visibility: Public) {
