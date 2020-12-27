@@ -5,6 +5,7 @@ import Homepage from './Homepage.jsx';
 import Register from './Register.jsx';
 import Login from './Login.jsx';
 import Settings from './Settings.jsx';
+import PostPage from './PostPage.jsx';
 
 export default class Contents extends React.Component {
   constructor() {
@@ -22,6 +23,8 @@ export default class Contents extends React.Component {
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/settings" component={Settings} />
+        <Route path="/posts/:postId" component={PostPage} />
+
 
         {/* <Route path="/users/:userid" component={Profile} /> */}
       </Switch>

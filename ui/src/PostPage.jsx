@@ -9,9 +9,7 @@ import {
   Button, Dropdown, Form, ButtonToolbar,
   Nav,
 } from 'react-bootstrap';
-import Switch from 'react-bootstrap/esm/Switch';
 
-import { Redirect, Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import {
@@ -45,7 +43,7 @@ function handleDateDifference(date) {
   return undefined;
 }
 
-export default class Post extends React.Component {
+export default class PostPage extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -76,8 +74,8 @@ export default class Post extends React.Component {
   }
 
   async componentDidMount() {
-    // console.log('component did mount called');
-    this.loadData();
+    console.log('component did mount called');
+    await this.loadData();
   }
 
   // componentDidUpdate(prevProps) {
@@ -91,8 +89,7 @@ export default class Post extends React.Component {
   // }
 
   async loadData(message) {
-    // console.log('loadData called');
-    const { post: currentPost } = this.props;
+    console.log('loadData called');
     const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const query = `query post($id: Int!){
       post(id: $id) {
@@ -127,7 +124,8 @@ export default class Post extends React.Component {
       }
     }
     `;
-    const vars = { id: currentPost.id };
+    const { match: { params: { postId: queryId } } } = this.props;
+    const vars = { id: parseInt(queryId, 10) };
     const data = await graphQLFetch(query, vars, this.showError);
     if (data) {
       // console.log('data fetched from loaddata');
@@ -358,27 +356,15 @@ export default class Post extends React.Component {
       toastMessage, toastType, toastVisible,
     } = this.state;
     const { onProfile } = this.props;
-    let post;
-    const { post: postState, edit, comment } = this.state;
-    if (Object.keys(postState).length === 0 && postState.constructor === Object) {
-      post = this.props.post;
-    } else {
-      post = postState;
+    const { post, edit, comment } = this.state;
+    console.log(post.comments);
+    let commentsList;
+    if (post.comments) {
+      commentsList = post.comments.map(com => (
+        <Comment comment={com} key={com.id} PostloadData={this.loadData} />
+      ));
     }
-    if (onProfile) {
-      console.log('post is rendered in profile');
-      return (
-        <div>
-          <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
-            <Card.Img fluid="true" responsive="true" src={post.source} />
-          </Card>
-          <br />
-        </div>
-      );
-    }
-    const commentsList = post.comments.map(com => (
-      <Comment comment={com} key={com.id} PostloadData={this.loadData} />
-    ));
+
     let description = '';
     if (!edit && post.description) {
       description = (
@@ -407,7 +393,7 @@ export default class Post extends React.Component {
     }
 
     let commentSection;
-    if (commentsList.length >= 0) {
+    if (commentsList) {
       commentSection = (
         <Card.Footer id="commentSection">
           {commentsList}
@@ -435,15 +421,14 @@ export default class Post extends React.Component {
       postNavBar = (
         <Nav className="ml-auto">
           <Button><h3><AiOutlineHeart onClick={this.handleOnClickLike} /></h3></Button>
-          <LinkContainer to={`/posts/${post.id}`}><Button><h3><AiOutlineGlobal /></h3></Button></LinkContainer>
-
+          <Button><h3><AiOutlineGlobal /></h3></Button>
         </Nav>
       );
     } else {
       postNavBar = (
         <Nav className="ml-auto">
           <Button onClick={this.handleOnClickUnlike}><h3><AiFillHeart /></h3></Button>
-          <LinkContainer to={`/posts/${post.id}`}><Button><h3><AiOutlineGlobal /></h3></Button></LinkContainer>
+          <Button><h3><AiOutlineGlobal /></h3></Button>
         </Nav>
       );
     }
@@ -453,30 +438,34 @@ export default class Post extends React.Component {
     let PostEditAndDeleteButton;
     // console.log("userId:", userId);
     // console.log("post userID:", post.author.id);
-    if (userId === post.author.id) {
-      PostEditAndDeleteButton = (
-        <div>
-          <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
-          <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
-        </div>
-      );
+    let usernameLink;
+
+    if (post.author) {
+      if (userId === post.author.id) {
+        PostEditAndDeleteButton = (
+          <div>
+            <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
+            <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
+          </div>
+        );
+        usernameLink = (
+          <LinkContainer to={`/profile/${post.author.id}`}><a><h6 id="username">{`${post.author.username}`}</h6></a></LinkContainer>
+        );
+      }
     }
 
-    const usernameLink = (
-      <LinkContainer to={`/profile/${post.author.id}`}><a><h6 id="username">{`${post.author.username}`}</h6></a></LinkContainer>
-    );
 
     return (
       <>
         <Card border="secondary" style={{ width: 'auto', height: 'auto' }}>
           <Card.Header className="PostHeader">
             <Row>
-              <Col xs={2}><Image fluid="true" responsive="true" src={post.author.source} roundedCircle /></Col>
+              <Col xs={2}><Image fluid="true" responsive="true" src={post.author ? post.author.source : ''} roundedCircle /></Col>
               <Col xs={10}>
                 <Row>
                   <Col>
                     {usernameLink}
-                    <h6>{`${handleDateDifference(post.createdAt)}`}</h6>
+                    <h6>{`${handleDateDifference(post.createdAt ? post.createdAt : null)}`}</h6>
                   </Col>
                   <Col>
                     <Dropdown>
@@ -513,5 +502,17 @@ export default class Post extends React.Component {
         <br />
       </>
     );
+    // return (
+    //   <div>
+    //     placeholder post for post
+    //   </div>
+    // );
   }
+  // render() {
+  // return (
+  //   <div>
+  //     placeholder post for post
+  //   </div>
+  // );
+  // }
 }
