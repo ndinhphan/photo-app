@@ -9,6 +9,7 @@ import {
 } from 'react-bootstrap';
 import Post from './Post.jsx';
 import graphQLFetch from './graphQLFetch.js';
+import authAndGetID from './perService';
 
 export default class Profile extends React.Component {
   constructor() {
@@ -37,6 +38,8 @@ export default class Profile extends React.Component {
   }
 
   async loadData() {
+    const userId = authAndGetID;
+
     const query = `query user($id: Int!) {
       user(id: $id) {
         firstname
