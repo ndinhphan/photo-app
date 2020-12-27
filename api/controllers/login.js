@@ -37,6 +37,8 @@ async function verifyUser(user, inputPassword, res) {
             const userData = {
                 id: user.dataValues.id
             };
+            console.log('\n\nuser id: ');
+            console.log(user.dataValues.id);
             const token = await jwtToken.generateToken(userData);
 
       return res.json({

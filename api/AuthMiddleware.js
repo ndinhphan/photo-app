@@ -3,7 +3,7 @@ const secretKey = process.env.JWT_KEY;
 
 let isAuth = async (req, res, next) => {
   console.log("Token: " + req.body.token);
-  const tokenFromClient = req.body.token || req.query.token || req.headers["token"];
+  const tokenFromClient = req.body.token;
 
   if (tokenFromClient) {
     try {

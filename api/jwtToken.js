@@ -4,8 +4,7 @@ const secretKey = process.env.JWT_KEY;
 const tokenLife = process.env.JWT_LIFE;
 const generateToken = user => new Promise((resolve, reject) => {
   const userData = {
-    name: user.name,
-    email: user.email,
+    id: user.id
   };
   jwt.sign(
     { data: userData },

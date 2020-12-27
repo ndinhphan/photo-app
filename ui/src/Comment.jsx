@@ -6,7 +6,8 @@ import {
 import { AiOutlineMore } from 'react-icons/ai';
 import graphQLFetch from './graphQLFetch.js';
 import Toast from './Toast.jsx';
-import authAndGetID from './perService';
+const service = require('./perService');
+// import authAndGetID from './perService';
 
 export default class Comment extends React.Component {
   constructor() {
@@ -83,7 +84,8 @@ export default class Comment extends React.Component {
 
 
   async handleSubmitEdit() {
-    const userId = authAndGetID;
+    const userId = await service.authAndGetID();
+    // const userId = authAndGetID;
     
     // console.log('handleSubmitEdit called');
     const { comment } = this.props;
