@@ -38,7 +38,6 @@ class CreatePostNavItem extends React.Component {
       files: null,
       preview: null,
 
-      imageUrl: '',
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showModal = this.showModal.bind(this);
@@ -49,7 +48,6 @@ class CreatePostNavItem extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.setState = this.setState.bind(this);
   }
 
   // firebase functions
@@ -71,24 +69,25 @@ class CreatePostNavItem extends React.Component {
 
   async handleSave() {
     const bucketName = 'images';
-    const file = this.state.files[0];
+    const { files } = this.state;
+    const file = files[0];
     const storageRef = await firebase.storage().ref(`${bucketName}/${file.name}`);
-    const uploadTask = await storageRef.put(file).then(async () => {
+    await storageRef.put(file).then(async () => {
       const storageRef2 = await firebase.storage().ref();
-      storageRef2.child(`images/${this.state.files[0].name}`).getDownloadURL().then((url) => {
+      storageRef2.child(`images/${file.name}`).getDownloadURL().then((url) => {
         console.log(url);
         return url;
       });
     });
   }
 
-  showImage() {
-    const storageRef = firebase.storage().ref();
-    const spaceRef = storageRef.child(`iamges/${this.state.files[0].name}`);
-    storageRef.child(`images/${this.state.files[0].name}`).getDownloadURL().then((url) => {
-      console.log(url);
-    });
-  }
+  // showImage() {
+  //   const storageRef = firebase.storage().ref();
+  //   const spaceRef = storageRef.child(`images/${this.state.files[0].name}`);
+  //   storageRef.child(`images/${this.state.files[0].name}`).getDownloadURL().then((url) => {
+  //     console.log(url);
+  //   });
+  // }
 
   handleChange(files) {
     if (!files || files.length === 0) {
@@ -125,7 +124,6 @@ class CreatePostNavItem extends React.Component {
     e.preventDefault();
     this.hideModal();
     const { reloadPostList } = this.props;
-    const { files } = this.state;
     console.log('handlesubmit called');
     // the form name is createPost
 
@@ -151,13 +149,13 @@ class CreatePostNavItem extends React.Component {
         }
       }
     }`;
-    let imageUrl;
     const bucketName = 'images';
-    const file = this.state.files[0];
+    const { files } = this.state;
+    const file = files[0];
     const storageRef = await firebase.storage().ref(`${bucketName}/${file.name}`);
-    const uploadTask = await storageRef.put(file).then(() => {
+    await storageRef.put(file).then(() => {
       const storageRef2 = firebase.storage().ref();
-      storageRef2.child(`images/${this.state.files[0].name}`).getDownloadURL().then(async (url) => {
+      storageRef2.child(`images/${file.name}`).getDownloadURL().then(async (url) => {
         const post = {
           userId: 2,
           source: url,
@@ -207,8 +205,8 @@ class CreatePostNavItem extends React.Component {
               </FormGroup>
               <div>
                 <input type="file" onChange={(e) => { this.handleChange(e.target.files); }} />
-                <button onClick={this.handleSave}>Save</button>
-                <button onClick={this.showImage}>Show Image</button>
+                {/* <Button onClick={this.handleSave}>Save</Button>
+                <Button onClick={this.showImage}>Show Image</Button> */}
                 <img id="new-img" />
                 <img src={preview} />
               </div>

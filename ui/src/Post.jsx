@@ -364,8 +364,8 @@ export default class Post extends React.Component {
         </Card>
       );
     }
-    const commentsList = post.comments.map(comment => (
-      <Comment comment={comment} key={comment.id} PostloadData={this.loadData} />
+    const commentsList = post.comments.map(com => (
+      <Comment comment={com} key={com.id} PostloadData={this.loadData} />
     ));
     let description = '';
     if (!edit && post.description) {
