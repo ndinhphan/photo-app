@@ -22,6 +22,7 @@ import Toast from './Toast.jsx';
 
 import graphQLFetch from './graphQLFetch.js';
 import Comment from './Comment.jsx';
+const service = require('./perService');
 
 function handleDateDifference(date) {
   if (date) {
@@ -93,7 +94,8 @@ export default class Post extends React.Component {
   async loadData(message) {
     // console.log('loadData called');
     const { post: currentPost } = this.props;
-    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
+    // const userId = parseInt(localStorage.getItem('USER_ID'), 10);
+    const userId = await service.authorize();
     const query = `query post($id: Int!){
       post(id: $id) {
         id
@@ -248,7 +250,8 @@ export default class Post extends React.Component {
   async handleSubmitComment() {
     // console.log('handleSubmitComment called');
     let post;
-    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
+    const userId = await service.authorize();
+    // const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const { post: postState, comment } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
@@ -303,7 +306,8 @@ export default class Post extends React.Component {
 
   async handleOnClickLike() {
     let post;
-    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
+    const userId = await service.authorize();
+    // const userId = parseInt(localStorage.getItem('USER_ID'), 10);
 
     const { post: postState } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
@@ -330,7 +334,8 @@ export default class Post extends React.Component {
 
   async handleOnClickUnlike() {
     let post;
-    const userId = parseInt(localStorage.getItem('USER_ID'), 10);
+    const userId = await service.authorize();
+    // const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const { post: postState } = this.state;
     if (Object.keys(postState).length === 0 && postState.constructor === Object) {
       post = this.props.post;
@@ -451,6 +456,7 @@ export default class Post extends React.Component {
     // console.log(post.author);
     // console.log(description);
     let PostEditAndDeleteButton;
+    let PostReportButton;
     // console.log("userId:", userId);
     // console.log("post userID:", post.author.id);
     if (userId === post.author.id) {
@@ -460,7 +466,9 @@ export default class Post extends React.Component {
           <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
         </div>
       );
-    }
+    } else if (userId == 5) {
+      PostEditAndDeleteButton = <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>;
+    } else PostReportButton = <Dropdown.Item href="#/action-3">Report</Dropdown.Item>;
 
     const usernameLink = (
       <LinkContainer to={`/profile/${post.author.id}`}><a><h6 id="username">{`${post.author.username}`}</h6></a></LinkContainer>
@@ -486,7 +494,8 @@ export default class Post extends React.Component {
 
                       <Dropdown.Menu>
                         {PostEditAndDeleteButton}
-                        <Dropdown.Item href="#/action-3">Report</Dropdown.Item>
+                        {PostReportButton}
+                        {/* <Dropdown.Item href="#/action-3">Report</Dropdown.Item> */}
                       </Dropdown.Menu>
                     </Dropdown>
                   </Col>

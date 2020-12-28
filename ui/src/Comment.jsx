@@ -6,6 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { AiOutlineMore } from 'react-icons/ai';
 import graphQLFetch from './graphQLFetch.js';
 import Toast from './Toast.jsx';
+const service = require('./perService');
 
 export default class Comment extends React.Component {
   constructor() {
@@ -126,6 +127,7 @@ export default class Comment extends React.Component {
       toastMessage, toastType, toastVisible,
     } = this.state;
     let comment;
+    // const userId = await service.authorize();
     const userId = parseInt(localStorage.getItem('USER_ID'), 10);
     const { comment: commentState, edit } = this.state;
     if (Object.keys(commentState).length === 0 && commentState.constructor === Object) {
@@ -180,6 +182,35 @@ export default class Comment extends React.Component {
                   <Dropdown.Item onClick={this.handleClickEdit}>Edit</Dropdown.Item>
                   <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
                   <Dropdown.Item>Report</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+          </Row>
+        </>
+
+      );
+    //admin---------
+    } else if (userId == 5) {
+      defaultContent = (
+        <>
+          <Row>
+            <Col xs={10} md={11} className="align-comment">
+              <div>
+                <h6>
+                  <LinkContainer to={`/profile/${comment.author.id}`}><a>{`${comment.author.username}`}</a></LinkContainer>
+                  {' '}
+                  {commentContent}
+                </h6>
+              </div>
+            </Col>
+            <Col xs={2} md={1}>
+              <Dropdown>
+                <Dropdown.Toggle id="dropdown-basic">
+                  <AiOutlineMore />
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={this.handleClickDelete}>Delete</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Col>

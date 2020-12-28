@@ -1,5 +1,5 @@
 async function authorize() {
-  console.log('checking');
+  console.log('checking token');
   let res = null;
   await fetch('/api/service', {
     method: 'POST',
